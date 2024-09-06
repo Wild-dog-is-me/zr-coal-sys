@@ -21,7 +21,7 @@ import com.zr.system.service.ISysDictTypeService;
 /**
  * 字典 业务层处理
  * 
- * @author ruoyi
+ * @author zr
  */
 @Service
 public class SysDictTypeServiceImpl implements ISysDictTypeService

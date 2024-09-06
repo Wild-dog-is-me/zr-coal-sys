@@ -4,8 +4,8 @@ import com.zr.common.utils.StringUtils;
 
 /**
  * 缓存信息
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class SysCache
 {

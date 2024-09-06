@@ -4,8 +4,8 @@ import com.zr.common.utils.StringUtils;
 
 /**
  * 分页数据
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class PageDomain
 {

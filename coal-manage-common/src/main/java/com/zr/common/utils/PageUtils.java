@@ -7,8 +7,8 @@ import com.zr.common.utils.sql.SqlUtil;
 
 /**
  * 分页工具类
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class PageUtils extends PageHelper
 {

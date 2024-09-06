@@ -2,8 +2,8 @@ package com.zr.common.enums;
 
 /**
  * 数据源
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public enum DataSourceType
 {

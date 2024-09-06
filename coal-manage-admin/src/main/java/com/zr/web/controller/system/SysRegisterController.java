@@ -13,8 +13,8 @@ import com.zr.system.service.ISysConfigService;
 
 /**
  * 注册验证
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 @RestController
 public class SysRegisterController extends BaseController

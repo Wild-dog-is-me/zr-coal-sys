@@ -8,8 +8,8 @@ import com.zr.common.core.domain.BaseEntity;
 
 /**
  * 操作日志记录表 oper_log
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class SysOperLog extends BaseEntity
 {

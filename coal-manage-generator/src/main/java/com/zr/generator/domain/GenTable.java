@@ -10,8 +10,8 @@ import com.zr.common.utils.StringUtils;
 
 /**
  * 业务表 gen_table
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class GenTable extends BaseEntity
 {

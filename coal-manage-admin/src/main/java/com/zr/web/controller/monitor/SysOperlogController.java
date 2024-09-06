@@ -21,8 +21,8 @@ import com.zr.system.service.ISysOperLogService;
 
 /**
  * 操作日志记录
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 @RestController
 @RequestMapping("/monitor/operlog")

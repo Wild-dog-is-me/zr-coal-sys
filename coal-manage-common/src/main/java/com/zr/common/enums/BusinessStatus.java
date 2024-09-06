@@ -3,7 +3,7 @@ package com.zr.common.enums;
 /**
  * 操作状态
  * 
- * @author ruoyi
+ * @author zr
  *
  */
 public enum BusinessStatus

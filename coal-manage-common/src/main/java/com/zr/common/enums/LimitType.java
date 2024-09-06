@@ -3,7 +3,7 @@ package com.zr.common.enums;
 /**
  * 限流类型
  *
- * @author ruoyi
+ * @author zr
  */
 
 public enum LimitType

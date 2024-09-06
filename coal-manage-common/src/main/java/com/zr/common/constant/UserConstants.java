@@ -3,7 +3,7 @@ package com.zr.common.constant;
 /**
  * 用户常量信息
  * 
- * @author ruoyi
+ * @author zr
  */
 public class UserConstants
 {

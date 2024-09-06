@@ -3,7 +3,7 @@ package com.zr.common.constant;
 /**
  * 任务调度通用常量
  * 
- * @author ruoyi
+ * @author zr
  */
 public class ScheduleConstants
 {

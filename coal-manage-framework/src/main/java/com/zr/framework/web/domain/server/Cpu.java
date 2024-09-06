@@ -5,7 +5,7 @@ import com.zr.common.utils.Arith;
 /**
  * CPU相关信息
  * 
- * @author ruoyi
+ * @author zr
  */
 public class Cpu
 {

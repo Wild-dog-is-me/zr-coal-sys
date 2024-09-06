@@ -15,7 +15,7 @@ import com.zr.common.utils.StringUtils;
 /**
  * Filter配置
  *
- * @author ruoyi
+ * @author zr
  */
 @Configuration
 public class FilterConfig

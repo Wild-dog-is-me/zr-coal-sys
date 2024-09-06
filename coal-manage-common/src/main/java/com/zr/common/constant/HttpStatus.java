@@ -3,7 +3,7 @@ package com.zr.common.constant;
 /**
  * 返回状态码
  * 
- * @author ruoyi
+ * @author zr
  */
 public class HttpStatus
 {

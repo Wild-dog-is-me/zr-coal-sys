@@ -6,8 +6,8 @@ import com.zr.common.utils.DateUtils;
 
 /**
  * JVM相关信息
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class Jvm
 {

@@ -14,7 +14,7 @@ import com.zr.common.utils.ServletUtils;
 /**
  * 防止重复提交拦截器
  *
- * @author ruoyi
+ * @author zr
  */
 @Component
 public abstract class RepeatSubmitInterceptor implements HandlerInterceptor

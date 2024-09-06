@@ -2,8 +2,8 @@ package com.zr.common.constant;
 
 /**
  * 缓存的key 常量
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class CacheConstants
 {

@@ -3,7 +3,7 @@ package com.zr.common.utils.sign;
 /**
  * Base64工具类
  * 
- * @author ruoyi
+ * @author zr
  */
 public final class Base64
 {

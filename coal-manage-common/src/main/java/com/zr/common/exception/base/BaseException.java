@@ -5,8 +5,8 @@ import com.zr.common.utils.StringUtils;
 
 /**
  * 基础异常
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class BaseException extends RuntimeException
 {

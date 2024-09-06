@@ -25,7 +25,7 @@ import com.zr.system.service.ISysDeptService;
 /**
  * 部门信息
  * 
- * @author ruoyi
+ * @author zr
  */
 @RestController
 @RequestMapping("/system/dept")

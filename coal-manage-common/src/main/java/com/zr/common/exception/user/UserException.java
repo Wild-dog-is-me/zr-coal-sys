@@ -4,8 +4,8 @@ import com.zr.common.exception.base.BaseException;
 
 /**
  * 用户信息异常类
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class UserException extends BaseException
 {

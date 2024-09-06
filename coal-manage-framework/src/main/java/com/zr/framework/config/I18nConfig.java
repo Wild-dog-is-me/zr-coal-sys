@@ -11,8 +11,8 @@ import com.zr.common.constant.Constants;
 
 /**
  * 资源文件配置加载
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 @Configuration
 public class I18nConfig implements WebMvcConfigurer

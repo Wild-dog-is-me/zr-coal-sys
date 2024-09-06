@@ -6,7 +6,7 @@ import com.zr.common.utils.DesensitizedUtil;
 /**
  * 脱敏类型
  *
- * @author ruoyi
+ * @author zr
  */
 public enum DesensitizedType
 {

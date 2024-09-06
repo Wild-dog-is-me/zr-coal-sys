@@ -2,8 +2,8 @@ package com.zr.common.exception.user;
 
 /**
  * 黑名单IP异常类
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class BlackListException extends UserException
 {

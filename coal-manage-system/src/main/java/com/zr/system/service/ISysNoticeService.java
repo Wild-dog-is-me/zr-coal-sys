@@ -6,7 +6,7 @@ import com.zr.system.domain.SysNotice;
 /**
  * 公告 服务层
  * 
- * @author ruoyi
+ * @author zr
  */
 public interface ISysNoticeService
 {

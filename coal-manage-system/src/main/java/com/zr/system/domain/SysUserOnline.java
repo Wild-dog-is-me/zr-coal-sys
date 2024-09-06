@@ -2,8 +2,8 @@ package com.zr.system.domain;
 
 /**
  * 当前在线会话
- * 
- * @author ruoyi
+ *
+ * @author zr
  */
 public class SysUserOnline
 {

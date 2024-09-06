@@ -3,7 +3,7 @@ package com.zr.common.utils.file;
 /**
  * 媒体类型工具类
  * 
- * @author ruoyi
+ * @author zr
  */
 public class MimeTypeUtils
 {

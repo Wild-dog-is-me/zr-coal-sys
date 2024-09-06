@@ -170,3 +170,11 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 腾讯云COS
+tencent:
+  cos:
+    accessKeyId: AKID67xb4JLBoERYR7apsiKitrcDconeIjwx
+    accessKeySecret: ub4KMBfvxlLisqb8RWq57wXes1xgIjww
+    bucketName: graduation-project-1306116578
+    assetsPath: https://graduation-project-1306116578.cos.ap-nanjing.myqcloud.com/

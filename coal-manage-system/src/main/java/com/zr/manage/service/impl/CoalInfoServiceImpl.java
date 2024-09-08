@@ -1,6 +1,8 @@
 package com.zr.manage.service.impl;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zr.common.utils.DateUtils;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.convert.CoalInfoConvert;
@@ -17,7 +19,7 @@ import com.zr.manage.service.ICoalInfoService;
  * @date 2024-09-08
  */
 @Service
-public class CoalInfoServiceImpl implements ICoalInfoService
+public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> implements ICoalInfoService
 {
     @Autowired
     private CoalInfoMapper coalInfoMapper;

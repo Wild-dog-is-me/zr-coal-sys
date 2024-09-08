@@ -41,10 +41,11 @@ public class CoalInfoVO extends BaseEntity {
     /** 供应商ID */
     private Long coalSupplierId;
 
+    /** 供应商名称 */
     private String supplierName;
-
+    /** 供应商联系人 */
     private String supplierPerson;
-
+    /** 供应商联系方式 */
     private String supplierPhone;
 
 }

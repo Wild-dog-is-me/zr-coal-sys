@@ -2,6 +2,7 @@ package com.zr.manage.service;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.domain.CoalInfo;
 
@@ -11,7 +12,7 @@ import com.zr.manage.domain.CoalInfo;
  * @author zr
  * @date 2024-09-08
  */
-public interface ICoalInfoService
+public interface ICoalInfoService extends IService<CoalInfo>
 {
     /**
      * 查询煤矿信息

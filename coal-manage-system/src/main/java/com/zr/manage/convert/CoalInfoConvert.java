@@ -54,5 +54,18 @@ public class CoalInfoConvert {
         return coalInfoVOList;
     }
 
+    public static CoalInfo convertEntity(CoalInfoVO coalInfoVO) {
+        return BeanUtil.copyProperties(coalInfoVO, CoalInfo.class);
+    }
+
+    public static List<CoalInfo> convertEntity(List<CoalInfoVO> coalInfoVOList){
+        List<CoalInfo> coalInfoList = new ArrayList<>();
+        coalInfoVOList.forEach(coalInfoVO -> {
+            CoalInfo coalInfo = convertEntity(coalInfoVO);
+            coalInfoList.add(coalInfo);
+        });
+        return coalInfoList;
+    }
+
 
 }

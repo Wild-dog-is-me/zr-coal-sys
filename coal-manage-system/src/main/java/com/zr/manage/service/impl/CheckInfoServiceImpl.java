@@ -1,6 +1,8 @@
 package com.zr.manage.service.impl;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zr.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,19 +12,19 @@ import com.zr.manage.service.ICheckInfoService;
 
 /**
  * 账单信息Service业务层处理
- * 
+ *
  * @author zr
  * @date 2024-09-08
  */
 @Service
-public class CheckInfoServiceImpl implements ICheckInfoService 
+public class CheckInfoServiceImpl extends ServiceImpl<CheckInfoMapper,CheckInfo> implements ICheckInfoService
 {
     @Autowired
     private CheckInfoMapper checkInfoMapper;
 
     /**
      * 查询账单信息
-     * 
+     *
      * @param id 账单信息主键
      * @return 账单信息
      */
@@ -34,7 +36,7 @@ public class CheckInfoServiceImpl implements ICheckInfoService
 
     /**
      * 查询账单信息列表
-     * 
+     *
      * @param checkInfo 账单信息
      * @return 账单信息
      */
@@ -46,7 +48,7 @@ public class CheckInfoServiceImpl implements ICheckInfoService
 
     /**
      * 新增账单信息
-     * 
+     *
      * @param checkInfo 账单信息
      * @return 结果
      */
@@ -59,7 +61,7 @@ public class CheckInfoServiceImpl implements ICheckInfoService
 
     /**
      * 修改账单信息
-     * 
+     *
      * @param checkInfo 账单信息
      * @return 结果
      */
@@ -72,7 +74,7 @@ public class CheckInfoServiceImpl implements ICheckInfoService
 
     /**
      * 批量删除账单信息
-     * 
+     *
      * @param ids 需要删除的账单信息主键
      * @return 结果
      */
@@ -84,7 +86,7 @@ public class CheckInfoServiceImpl implements ICheckInfoService
 
     /**
      * 删除账单信息信息
-     * 
+     *
      * @param id 账单信息主键
      * @return 结果
      */

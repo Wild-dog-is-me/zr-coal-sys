@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="供应商名称" prop="supplierName">
+      <el-form-item label="供应商名称" prop="supplierName" label-width="100px">
         <el-input
           v-model="queryParams.supplierName"
           placeholder="请输入供应商名称"
@@ -9,26 +9,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="供应商简介" prop="supplierIntro">
-        <el-input
-          v-model="queryParams.supplierIntro"
-          placeholder="请输入供应商简介"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商联系人" prop="supplierPerson">
+      <el-form-item label="供应商联系人" prop="supplierPerson" label-width="100px">
         <el-input
           v-model="queryParams.supplierPerson"
           placeholder="请输入供应商联系人"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="供应商联系电话" prop="supplierPhone">
-        <el-input
-          v-model="queryParams.supplierPhone"
-          placeholder="请输入供应商联系电话"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -48,7 +32,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['manage:supplier:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -59,7 +44,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['manage:supplier:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -70,7 +56,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['manage:supplier:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -80,18 +67,22 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['manage:supplier:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="supplierList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="供应商名称" align="center" prop="supplierName" />
-      <el-table-column label="供应商简介" align="center" prop="supplierIntro" />
-      <el-table-column label="供应商联系人" align="center" prop="supplierPerson" />
-      <el-table-column label="供应商联系电话" align="center" prop="supplierPhone" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="供应商名称" align="center" prop="supplierName"/>
+      <el-table-column label="供应商简介" align="center" prop="supplierIntro" width="200px"/>
+      <el-table-column label="供应商联系人" align="center" prop="supplierPerson">
+        <template slot-scope="scope">
+          <el-tag>{{scope.row.supplierPerson}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="供应商联系电话" align="center" prop="supplierPhone"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -100,18 +91,20 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['manage:supplier:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['manage:supplier:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -122,18 +115,18 @@
 
     <!-- 添加或修改供应商对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="110px">
         <el-form-item label="供应商名称" prop="supplierName">
-          <el-input v-model="form.supplierName" placeholder="请输入供应商名称" />
+          <el-input v-model="form.supplierName" placeholder="请输入供应商名称"/>
         </el-form-item>
         <el-form-item label="供应商简介" prop="supplierIntro">
-          <el-input v-model="form.supplierIntro" placeholder="请输入供应商简介" />
+          <el-input v-model="form.supplierIntro" placeholder="请输入供应商简介"/>
         </el-form-item>
         <el-form-item label="供应商联系人" prop="supplierPerson">
-          <el-input v-model="form.supplierPerson" placeholder="请输入供应商联系人" />
+          <el-input v-model="form.supplierPerson" placeholder="请输入供应商联系人"/>
         </el-form-item>
         <el-form-item label="供应商联系电话" prop="supplierPhone">
-          <el-input v-model="form.supplierPhone" placeholder="请输入供应商联系电话" />
+          <el-input v-model="form.supplierPhone" placeholder="请输入供应商联系电话"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -145,7 +138,7 @@
 </template>
 
 <script>
-import { listSupplier, getSupplier, delSupplier, addSupplier, updateSupplier } from "@/api/manage/supplier";
+import {listSupplier, getSupplier, delSupplier, addSupplier, updateSupplier} from "@/api/manage/supplier";
 
 export default {
   name: "Supplier",
@@ -181,8 +174,7 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -231,7 +223,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -273,12 +265,13 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除供应商编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除供应商编号为"' + ids + '"的数据项？').then(function () {
         return delSupplier(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

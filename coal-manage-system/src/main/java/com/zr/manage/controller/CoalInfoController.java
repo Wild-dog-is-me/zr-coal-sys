@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zr.manage.controller.vo.CoalInfoVO;
+import com.zr.manage.convert.CoalInfoConvert;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +55,9 @@ public class CoalInfoController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, CoalInfo coalInfo)
     {
-        List<CoalInfo> list = coalInfoService.selectCoalInfoList(coalInfo);
+        List<CoalInfoVO> list = coalInfoService.selectCoalInfoList(coalInfo);
         ExcelUtil<CoalInfo> util = new ExcelUtil<CoalInfo>(CoalInfo.class);
-        util.exportExcel(response, list, "煤矿信息数据");
+        util.exportExcel(response, CoalInfoConvert.convertEntity(list), "煤矿信息数据");
     }
 
     /**

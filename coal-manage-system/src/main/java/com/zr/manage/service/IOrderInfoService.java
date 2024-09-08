@@ -1,19 +1,21 @@
 package com.zr.manage.service;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.zr.manage.domain.OrderInfo;
 
 /**
  * 订单信息Service接口
- * 
+ *
  * @author zr
  * @date 2024-09-08
  */
-public interface IOrderInfoService 
+public interface IOrderInfoService extends IService<OrderInfo>
 {
     /**
      * 查询订单信息
-     * 
+     *
      * @param id 订单信息主键
      * @return 订单信息
      */
@@ -21,7 +23,7 @@ public interface IOrderInfoService
 
     /**
      * 查询订单信息列表
-     * 
+     *
      * @param orderInfo 订单信息
      * @return 订单信息集合
      */
@@ -29,7 +31,7 @@ public interface IOrderInfoService
 
     /**
      * 新增订单信息
-     * 
+     *
      * @param orderInfo 订单信息
      * @return 结果
      */
@@ -37,7 +39,7 @@ public interface IOrderInfoService
 
     /**
      * 修改订单信息
-     * 
+     *
      * @param orderInfo 订单信息
      * @return 结果
      */
@@ -45,7 +47,7 @@ public interface IOrderInfoService
 
     /**
      * 批量删除订单信息
-     * 
+     *
      * @param ids 需要删除的订单信息主键集合
      * @return 结果
      */
@@ -53,7 +55,7 @@ public interface IOrderInfoService
 
     /**
      * 删除订单信息信息
-     * 
+     *
      * @param id 订单信息主键
      * @return 结果
      */

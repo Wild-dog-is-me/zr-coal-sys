@@ -1,6 +1,8 @@
 package com.zr.manage.service.impl;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zr.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,19 +12,19 @@ import com.zr.manage.service.INoticeInfoService;
 
 /**
  * 公告信息Service业务层处理
- * 
+ *
  * @author zr
  * @date 2024-09-08
  */
 @Service
-public class NoticeInfoServiceImpl implements INoticeInfoService 
+public class NoticeInfoServiceImpl extends ServiceImpl<NoticeInfoMapper,NoticeInfo> implements INoticeInfoService
 {
     @Autowired
     private NoticeInfoMapper noticeInfoMapper;
 
     /**
      * 查询公告信息
-     * 
+     *
      * @param id 公告信息主键
      * @return 公告信息
      */
@@ -34,7 +36,7 @@ public class NoticeInfoServiceImpl implements INoticeInfoService
 
     /**
      * 查询公告信息列表
-     * 
+     *
      * @param noticeInfo 公告信息
      * @return 公告信息
      */
@@ -46,7 +48,7 @@ public class NoticeInfoServiceImpl implements INoticeInfoService
 
     /**
      * 新增公告信息
-     * 
+     *
      * @param noticeInfo 公告信息
      * @return 结果
      */
@@ -59,7 +61,7 @@ public class NoticeInfoServiceImpl implements INoticeInfoService
 
     /**
      * 修改公告信息
-     * 
+     *
      * @param noticeInfo 公告信息
      * @return 结果
      */
@@ -72,7 +74,7 @@ public class NoticeInfoServiceImpl implements INoticeInfoService
 
     /**
      * 批量删除公告信息
-     * 
+     *
      * @param ids 需要删除的公告信息主键
      * @return 结果
      */
@@ -84,7 +86,7 @@ public class NoticeInfoServiceImpl implements INoticeInfoService
 
     /**
      * 删除公告信息信息
-     * 
+     *
      * @param id 公告信息主键
      * @return 结果
      */

@@ -1,6 +1,8 @@
 package com.zr.manage.service.impl;
 
 import java.util.List;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zr.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,19 +12,19 @@ import com.zr.manage.service.IBidInfoService;
 
 /**
  * 竞价采购Service业务层处理
- * 
+ *
  * @author zr
  * @date 2024-09-08
  */
 @Service
-public class BidInfoServiceImpl implements IBidInfoService 
+public class BidInfoServiceImpl extends ServiceImpl<BidInfoMapper,BidInfo> implements IBidInfoService
 {
     @Autowired
     private BidInfoMapper bidInfoMapper;
 
     /**
      * 查询竞价采购
-     * 
+     *
      * @param id 竞价采购主键
      * @return 竞价采购
      */
@@ -34,7 +36,7 @@ public class BidInfoServiceImpl implements IBidInfoService
 
     /**
      * 查询竞价采购列表
-     * 
+     *
      * @param bidInfo 竞价采购
      * @return 竞价采购
      */
@@ -46,7 +48,7 @@ public class BidInfoServiceImpl implements IBidInfoService
 
     /**
      * 新增竞价采购
-     * 
+     *
      * @param bidInfo 竞价采购
      * @return 结果
      */
@@ -59,7 +61,7 @@ public class BidInfoServiceImpl implements IBidInfoService
 
     /**
      * 修改竞价采购
-     * 
+     *
      * @param bidInfo 竞价采购
      * @return 结果
      */
@@ -72,7 +74,7 @@ public class BidInfoServiceImpl implements IBidInfoService
 
     /**
      * 批量删除竞价采购
-     * 
+     *
      * @param ids 需要删除的竞价采购主键
      * @return 结果
      */
@@ -84,7 +86,7 @@ public class BidInfoServiceImpl implements IBidInfoService
 
     /**
      * 删除竞价采购信息
-     * 
+     *
      * @param id 竞价采购主键
      * @return 结果
      */

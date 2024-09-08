@@ -3,8 +3,11 @@ package com.zr.manage.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.convert.CoalInfoConvert;
+import com.zr.manage.domain.SupplierInfo;
+import com.zr.manage.service.ISupplierInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,17 +35,17 @@ import com.zr.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/manage/coal")
-public class CoalInfoController extends BaseController
-{
+public class CoalInfoController extends BaseController {
     @Autowired
     private ICoalInfoService coalInfoService;
+    @Autowired
+    private ISupplierInfoService supplierInfoService;
 
     /**
      * 查询煤矿信息列表
      */
     @GetMapping("/list")
-    public TableDataInfo list(CoalInfo coalInfo)
-    {
+    public TableDataInfo list(CoalInfo coalInfo) {
         startPage();
         List<CoalInfoVO> list = coalInfoService.selectCoalInfoList(coalInfo);
         return getDataTable(list);
@@ -53,8 +56,7 @@ public class CoalInfoController extends BaseController
      */
     @Log(title = "煤矿信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, CoalInfo coalInfo)
-    {
+    public void export(HttpServletResponse response, CoalInfo coalInfo) {
         List<CoalInfoVO> list = coalInfoService.selectCoalInfoList(coalInfo);
         ExcelUtil<CoalInfo> util = new ExcelUtil<CoalInfo>(CoalInfo.class);
         util.exportExcel(response, CoalInfoConvert.convertEntity(list), "煤矿信息数据");
@@ -64,8 +66,7 @@ public class CoalInfoController extends BaseController
      * 获取煤矿信息详细信息
      */
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(coalInfoService.selectCoalInfoById(id));
     }
 
@@ -74,8 +75,7 @@ public class CoalInfoController extends BaseController
      */
     @Log(title = "煤矿信息", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody CoalInfo coalInfo)
-    {
+    public AjaxResult add(@RequestBody CoalInfo coalInfo) {
         return toAjax(coalInfoService.insertCoalInfo(coalInfo));
     }
 
@@ -84,8 +84,7 @@ public class CoalInfoController extends BaseController
      */
     @Log(title = "煤矿信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody CoalInfo coalInfo)
-    {
+    public AjaxResult edit(@RequestBody CoalInfo coalInfo) {
         return toAjax(coalInfoService.updateCoalInfo(coalInfo));
     }
 
@@ -93,9 +92,25 @@ public class CoalInfoController extends BaseController
      * 删除煤矿信息
      */
     @Log(title = "煤矿信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(coalInfoService.deleteCoalInfoByIds(ids));
     }
+
+    /**
+     * 供应商列表
+     */
+    @GetMapping("/supplierList")
+    public AjaxResult supplierList() {
+        List<SupplierInfo> list = supplierInfoService.list();
+        return AjaxResult.success(list);
+    }
+
+//    /**
+//     * 销售煤炭
+//     */
+//    @PostMapping("/sale")
+//    public AjaxResult sale() {
+//
+//    }
 }

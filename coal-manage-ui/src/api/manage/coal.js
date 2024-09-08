@@ -42,3 +42,11 @@ export function delCoal(id) {
     method: 'delete'
   })
 }
+
+// 删除煤矿信息
+export function listSupplierList() {
+  return request({
+    url: '/manage/coal/supplierList',
+    method: 'get'
+  })
+}

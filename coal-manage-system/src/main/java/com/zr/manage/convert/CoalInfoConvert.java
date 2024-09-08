@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @Author: Odin
  * @Date: 2024/9/8 15:40
- * @Description:
+ * @Description: 煤炭信息转换
  */
 
 @Component

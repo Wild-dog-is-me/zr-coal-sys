@@ -51,30 +51,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['manage:coal:edit']"
-        >修改
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['manage:coal:remove']"
-        >删除
-        </el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -105,7 +81,7 @@
         </template>
       </el-table-column>
       <el-table-column label="产品描述" align="center" prop="coalDecs"/>
-      <el-table-column label="订单库存(吨)" align="center" prop="coalInventory"/>
+      <el-table-column label="产品库存(吨)" align="center" prop="coalInventory"/>
       <el-table-column label="供应商" align="center" prop="supplierName"/>
       <el-table-column label="供应商联系人" align="center" prop="supplierPerson">
         <template slot-scope="scope">
@@ -147,19 +123,30 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="煤矿类型" prop="coalKind">
-          <el-input v-model="form.coalKind" placeholder="请输入煤矿类型"/>
+          <el-select v-model="form.coalKind" placeholder="请选择类型" clearable>
+            <el-option
+              v-for="dict in dict.type.coal_kind"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="规格" prop="coalSize">
-          <el-input v-model="form.coalSize" placeholder="请输入规格"/>
+          <el-select v-model="form.coalSize" placeholder="请选择规格" clearable>
+            <el-option
+              v-for="dict in dict.type.coal_size"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="价格" prop="coalPrice">
           <el-input v-model="form.coalPrice" placeholder="请输入价格"/>
         </el-form-item>
         <el-form-item label="产品描述" prop="coalDecs">
           <el-input v-model="form.coalDecs" placeholder="请输入产品描述"/>
-        </el-form-item>
-        <el-form-item label="订单库存" prop="coalInventory">
-          <el-input v-model="form.coalInventory" placeholder="请输入订单库存"/>
         </el-form-item>
         <el-form-item label="供应商" prop="coalSupplierId">
           <el-select v-model="form.coalSupplierId" placeholder="请选择供应商" clearable value-key="value">

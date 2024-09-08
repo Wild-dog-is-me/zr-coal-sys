@@ -4,9 +4,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.zr.manage.controller.dto.CoalOrderDto;
+import com.zr.manage.controller.dto.CoalPurchaseDto;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.convert.CoalInfoConvert;
 import com.zr.manage.domain.SupplierInfo;
+import com.zr.manage.service.IOrderInfoService;
 import com.zr.manage.service.ISupplierInfoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +43,8 @@ public class CoalInfoController extends BaseController {
     private ICoalInfoService coalInfoService;
     @Autowired
     private ISupplierInfoService supplierInfoService;
+    @Autowired
+    private IOrderInfoService orderInfoService;
 
     /**
      * 查询煤矿信息列表
@@ -106,11 +111,21 @@ public class CoalInfoController extends BaseController {
         return AjaxResult.success(list);
     }
 
-//    /**
-//     * 销售煤炭
-//     */
-//    @PostMapping("/sale")
-//    public AjaxResult sale() {
-//
-//    }
+    /**
+     * 销售煤炭
+     */
+    @PostMapping("/sale")
+    public AjaxResult sale(@RequestBody CoalOrderDto dto) {
+        orderInfoService.order(dto);
+        return AjaxResult.success();
+    }
+
+    /**
+     * 采购煤炭
+     */
+    @PostMapping("/purchase")
+    public AjaxResult purchase(@RequestBody CoalPurchaseDto dto) {
+        orderInfoService.purchase(dto);
+        return AjaxResult.success();
+    }
 }

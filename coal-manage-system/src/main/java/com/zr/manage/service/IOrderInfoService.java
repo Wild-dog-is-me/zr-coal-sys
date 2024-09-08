@@ -3,6 +3,8 @@ package com.zr.manage.service;
 import java.util.List;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zr.manage.controller.dto.CoalOrderDto;
+import com.zr.manage.controller.dto.CoalPurchaseDto;
 import com.zr.manage.domain.OrderInfo;
 
 /**
@@ -60,4 +62,17 @@ public interface IOrderInfoService extends IService<OrderInfo>
      * @return 结果
      */
     public int deleteOrderInfoById(Long id);
+
+    /**
+     * 煤炭下单
+     * @param dto
+     */
+    void order(CoalOrderDto dto);
+
+    /**
+     * 煤炭采购
+     * @param dto
+     */
+    void purchase(CoalPurchaseDto dto);
+
 }

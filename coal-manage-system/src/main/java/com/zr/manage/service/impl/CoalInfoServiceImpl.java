@@ -57,6 +57,7 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     @Override
     public int insertCoalInfo(CoalInfo coalInfo)
     {
+        coalInfo.setCoalInventory("0");
         coalInfo.setCreateTime(DateUtils.getNowDate());
         return coalInfoMapper.insertCoalInfo(coalInfo);
     }

@@ -2,6 +2,7 @@ package com.zr.manage.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.zr.common.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,13 +15,13 @@ import lombok.experimental.Accessors;
  * @Description:
  */
 
-@TableName("file_entity")
+@TableName("zr_file_info")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Accessors(chain = true)
-public class FileEntity extends BaseEntity{
+public class FileEntity extends BaseEntity {
 
     /**
      * 文件名称
@@ -33,5 +34,11 @@ public class FileEntity extends BaseEntity{
      */
     @TableField("file_url")
     private String fileUrl;
+
+    /**
+     * 绑定的业务ID
+     */
+    @TableField("object_id")
+    private String objectId;
 
 }

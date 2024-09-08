@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zr.manage.mapper.CheckInfoMapper">
+    
+    <resultMap type="CheckInfo" id="CheckInfoResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="checkOrderId"    column="check_order_id"    />
+        <result property="checkRevAmt"    column="check_rev_amt"    />
+        <result property="checkPayName"    column="check_pay_name"    />
+        <result property="checkPayPhone"    column="check_pay_phone"    />
+        <result property="checkPayRemark"    column="check_pay_remark"    />
+        <result property="checkHolderUserId"    column="check_holder_user_id"    />
+    </resultMap>
+
+    <sql id="selectCheckInfoVo">
+        select id, create_by, update_by, create_time, update_time, check_order_id, check_rev_amt, check_pay_name, check_pay_phone, check_pay_remark, check_holder_user_id from zr_check_info
+    </sql>
+
+    <select id="selectCheckInfoList" parameterType="CheckInfo" resultMap="CheckInfoResult">
+        <include refid="selectCheckInfoVo"/>
+        <where>  
+            <if test="checkOrderId != null "> and check_order_id = #{checkOrderId}</if>
+            <if test="checkRevAmt != null "> and check_rev_amt = #{checkRevAmt}</if>
+            <if test="checkPayName != null  and checkPayName != ''"> and check_pay_name like concat('%', #{checkPayName}, '%')</if>
+            <if test="checkPayPhone != null  and checkPayPhone != ''"> and check_pay_phone = #{checkPayPhone}</if>
+            <if test="checkPayRemark != null  and checkPayRemark != ''"> and check_pay_remark = #{checkPayRemark}</if>
+            <if test="checkHolderUserId != null "> and check_holder_user_id = #{checkHolderUserId}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckInfoById" parameterType="Long" resultMap="CheckInfoResult">
+        <include refid="selectCheckInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCheckInfo" parameterType="CheckInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into zr_check_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="checkOrderId != null">check_order_id,</if>
+            <if test="checkRevAmt != null">check_rev_amt,</if>
+            <if test="checkPayName != null">check_pay_name,</if>
+            <if test="checkPayPhone != null">check_pay_phone,</if>
+            <if test="checkPayRemark != null">check_pay_remark,</if>
+            <if test="checkHolderUserId != null">check_holder_user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="checkOrderId != null">#{checkOrderId},</if>
+            <if test="checkRevAmt != null">#{checkRevAmt},</if>
+            <if test="checkPayName != null">#{checkPayName},</if>
+            <if test="checkPayPhone != null">#{checkPayPhone},</if>
+            <if test="checkPayRemark != null">#{checkPayRemark},</if>
+            <if test="checkHolderUserId != null">#{checkHolderUserId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckInfo" parameterType="CheckInfo">
+        update zr_check_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="checkOrderId != null">check_order_id = #{checkOrderId},</if>
+            <if test="checkRevAmt != null">check_rev_amt = #{checkRevAmt},</if>
+            <if test="checkPayName != null">check_pay_name = #{checkPayName},</if>
+            <if test="checkPayPhone != null">check_pay_phone = #{checkPayPhone},</if>
+            <if test="checkPayRemark != null">check_pay_remark = #{checkPayRemark},</if>
+            <if test="checkHolderUserId != null">check_holder_user_id = #{checkHolderUserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckInfoById" parameterType="Long">
+        delete from zr_check_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckInfoByIds" parameterType="String">
+        delete from zr_check_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

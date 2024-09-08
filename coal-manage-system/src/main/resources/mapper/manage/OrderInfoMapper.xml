@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zr.manage.mapper.OrderInfoMapper">
+    
+    <resultMap type="OrderInfo" id="OrderInfoResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="orderCoalId"    column="order_coal_id"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="orderPayStatus"    column="order_pay_status"    />
+        <result property="orderPrice"    column="order_price"    />
+        <result property="orderRemark"    column="order_remark"    />
+        <result property="orderBuyerName"    column="order_buyer_name"    />
+        <result property="orderBuyerPhone"    column="order_buyer_phone"    />
+        <result property="orderBuyerAddress"    column="order_buyer_address"    />
+        <result property="orderHolderUserId"    column="order_holder_user_id"    />
+    </resultMap>
+
+    <sql id="selectOrderInfoVo">
+        select id, create_by, update_by, create_time, update_time, order_no, order_coal_id, order_status, order_pay_status, order_price, order_remark, order_buyer_name, order_buyer_phone, order_buyer_address, order_holder_user_id from zr_order_info
+    </sql>
+
+    <select id="selectOrderInfoList" parameterType="OrderInfo" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        <where>  
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="orderCoalId != null "> and order_coal_id = #{orderCoalId}</if>
+            <if test="orderStatus != null  and orderStatus != ''"> and order_status = #{orderStatus}</if>
+            <if test="orderPayStatus != null  and orderPayStatus != ''"> and order_pay_status = #{orderPayStatus}</if>
+            <if test="orderPrice != null "> and order_price = #{orderPrice}</if>
+            <if test="orderRemark != null  and orderRemark != ''"> and order_remark = #{orderRemark}</if>
+            <if test="orderBuyerName != null  and orderBuyerName != ''"> and order_buyer_name like concat('%', #{orderBuyerName}, '%')</if>
+            <if test="orderBuyerPhone != null  and orderBuyerPhone != ''"> and order_buyer_phone = #{orderBuyerPhone}</if>
+            <if test="orderBuyerAddress != null  and orderBuyerAddress != ''"> and order_buyer_address = #{orderBuyerAddress}</if>
+            <if test="orderHolderUserId != null "> and order_holder_user_id = #{orderHolderUserId}</if>
+        </where>
+    </select>
+    
+    <select id="selectOrderInfoById" parameterType="Long" resultMap="OrderInfoResult">
+        <include refid="selectOrderInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertOrderInfo" parameterType="OrderInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into zr_order_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="orderNo != null">order_no,</if>
+            <if test="orderCoalId != null">order_coal_id,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="orderPayStatus != null">order_pay_status,</if>
+            <if test="orderPrice != null">order_price,</if>
+            <if test="orderRemark != null">order_remark,</if>
+            <if test="orderBuyerName != null">order_buyer_name,</if>
+            <if test="orderBuyerPhone != null">order_buyer_phone,</if>
+            <if test="orderBuyerAddress != null">order_buyer_address,</if>
+            <if test="orderHolderUserId != null">order_holder_user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="orderNo != null">#{orderNo},</if>
+            <if test="orderCoalId != null">#{orderCoalId},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="orderPayStatus != null">#{orderPayStatus},</if>
+            <if test="orderPrice != null">#{orderPrice},</if>
+            <if test="orderRemark != null">#{orderRemark},</if>
+            <if test="orderBuyerName != null">#{orderBuyerName},</if>
+            <if test="orderBuyerPhone != null">#{orderBuyerPhone},</if>
+            <if test="orderBuyerAddress != null">#{orderBuyerAddress},</if>
+            <if test="orderHolderUserId != null">#{orderHolderUserId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOrderInfo" parameterType="OrderInfo">
+        update zr_order_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="orderCoalId != null">order_coal_id = #{orderCoalId},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="orderPayStatus != null">order_pay_status = #{orderPayStatus},</if>
+            <if test="orderPrice != null">order_price = #{orderPrice},</if>
+            <if test="orderRemark != null">order_remark = #{orderRemark},</if>
+            <if test="orderBuyerName != null">order_buyer_name = #{orderBuyerName},</if>
+            <if test="orderBuyerPhone != null">order_buyer_phone = #{orderBuyerPhone},</if>
+            <if test="orderBuyerAddress != null">order_buyer_address = #{orderBuyerAddress},</if>
+            <if test="orderHolderUserId != null">order_holder_user_id = #{orderHolderUserId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOrderInfoById" parameterType="Long">
+        delete from zr_order_info where id = #{id}
+    </delete>
+
+    <delete id="deleteOrderInfoByIds" parameterType="String">
+        delete from zr_order_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

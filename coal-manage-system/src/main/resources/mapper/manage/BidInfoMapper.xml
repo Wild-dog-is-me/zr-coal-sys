@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zr.manage.mapper.BidInfoMapper">
+    
+    <resultMap type="BidInfo" id="BidInfoResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="bidName"    column="bid_name"    />
+        <result property="bidCoalType"    column="bid_coal_type"    />
+        <result property="bidCoalSize"    column="bid_coal_size"    />
+        <result property="bidCoalPrice"    column="bid_coal_price"    />
+        <result property="bidSupplierId"    column="bid_supplier_id"    />
+        <result property="bidRemark"    column="bid_remark"    />
+    </resultMap>
+
+    <sql id="selectBidInfoVo">
+        select id, create_by, update_by, create_time, update_time, bid_name, bid_coal_type, bid_coal_size, bid_coal_price, bid_supplier_id, bid_remark from zr_bid_info
+    </sql>
+
+    <select id="selectBidInfoList" parameterType="BidInfo" resultMap="BidInfoResult">
+        <include refid="selectBidInfoVo"/>
+        <where>  
+            <if test="bidName != null  and bidName != ''"> and bid_name like concat('%', #{bidName}, '%')</if>
+            <if test="bidCoalType != null  and bidCoalType != ''"> and bid_coal_type = #{bidCoalType}</if>
+            <if test="bidCoalSize != null  and bidCoalSize != ''"> and bid_coal_size = #{bidCoalSize}</if>
+            <if test="bidCoalPrice != null "> and bid_coal_price = #{bidCoalPrice}</if>
+            <if test="bidSupplierId != null  and bidSupplierId != ''"> and bid_supplier_id = #{bidSupplierId}</if>
+            <if test="bidRemark != null  and bidRemark != ''"> and bid_remark = #{bidRemark}</if>
+        </where>
+    </select>
+    
+    <select id="selectBidInfoById" parameterType="Long" resultMap="BidInfoResult">
+        <include refid="selectBidInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertBidInfo" parameterType="BidInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into zr_bid_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="bidName != null">bid_name,</if>
+            <if test="bidCoalType != null">bid_coal_type,</if>
+            <if test="bidCoalSize != null">bid_coal_size,</if>
+            <if test="bidCoalPrice != null">bid_coal_price,</if>
+            <if test="bidSupplierId != null">bid_supplier_id,</if>
+            <if test="bidRemark != null">bid_remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="bidName != null">#{bidName},</if>
+            <if test="bidCoalType != null">#{bidCoalType},</if>
+            <if test="bidCoalSize != null">#{bidCoalSize},</if>
+            <if test="bidCoalPrice != null">#{bidCoalPrice},</if>
+            <if test="bidSupplierId != null">#{bidSupplierId},</if>
+            <if test="bidRemark != null">#{bidRemark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBidInfo" parameterType="BidInfo">
+        update zr_bid_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="bidName != null">bid_name = #{bidName},</if>
+            <if test="bidCoalType != null">bid_coal_type = #{bidCoalType},</if>
+            <if test="bidCoalSize != null">bid_coal_size = #{bidCoalSize},</if>
+            <if test="bidCoalPrice != null">bid_coal_price = #{bidCoalPrice},</if>
+            <if test="bidSupplierId != null">bid_supplier_id = #{bidSupplierId},</if>
+            <if test="bidRemark != null">bid_remark = #{bidRemark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBidInfoById" parameterType="Long">
+        delete from zr_bid_info where id = #{id}
+    </delete>
+
+    <delete id="deleteBidInfoByIds" parameterType="String">
+        delete from zr_bid_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

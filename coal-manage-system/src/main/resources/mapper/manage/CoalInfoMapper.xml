@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zr.manage.mapper.CoalInfoMapper">
+
+    <resultMap type="CoalInfo" id="CoalInfoResult">
+        <result property="id"    column="id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="coalKind"    column="coal_kind"    />
+        <result property="coalSize"    column="coal_size"    />
+        <result property="coalPrice"    column="coal_price"    />
+        <result property="coalOriginPlace"    column="coal_origin_place"    />
+        <result property="coalDecs"    column="coal_decs"    />
+        <result property="coalInventory"    column="coal_inventory"    />
+        <result property="coalSupplierId"    column="coal_supplier_id"    />
+    </resultMap>
+
+    <sql id="selectCoalInfoVo">
+        select id, create_by, update_by, create_time, update_time, coal_kind, coal_size, coal_price, coal_origin_place, coal_decs, coal_inventory, coal_supplier_id from zr_coal_info
+    </sql>
+
+    <select id="selectCoalInfoList" parameterType="CoalInfo" resultMap="CoalInfoResult">
+        <include refid="selectCoalInfoVo"/>
+        <where>
+            <if test="coalKind != null  and coalKind != ''"> and coal_kind = #{coalKind}</if>
+            <if test="coalSize != null  and coalSize != ''"> and coal_size = #{coalSize}</if>
+            <if test="coalPrice != null "> and coal_price = #{coalPrice}</if>
+            <if test="coalOriginPlace != null  and coalOriginPlace != ''"> and coal_origin_place = #{coalOriginPlace}</if>
+            <if test="coalDecs != null  and coalDecs != ''"> and coal_decs = #{coalDecs}</if>
+            <if test="coalInventory != null  and coalInventory != ''"> and coal_inventory = #{coalInventory}</if>
+            <if test="coalSupplierId != null "> and coal_supplier_id = #{coalSupplierId}</if>
+        </where>
+    </select>
+
+    <select id="selectCoalInfoById" parameterType="Long" resultMap="CoalInfoResult">
+        <include refid="selectCoalInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCoalInfo" parameterType="CoalInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into zr_coal_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="coalKind != null">coal_kind,</if>
+            <if test="coalSize != null">coal_size,</if>
+            <if test="coalPrice != null">coal_price,</if>
+            <if test="coalOriginPlace != null">coal_origin_place,</if>
+            <if test="coalDecs != null">coal_decs,</if>
+            <if test="coalInventory != null">coal_inventory,</if>
+            <if test="coalSupplierId != null">coal_supplier_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="coalKind != null">#{coalKind},</if>
+            <if test="coalSize != null">#{coalSize},</if>
+            <if test="coalPrice != null">#{coalPrice},</if>
+            <if test="coalOriginPlace != null">#{coalOriginPlace},</if>
+            <if test="coalDecs != null">#{coalDecs},</if>
+            <if test="coalInventory != null">#{coalInventory},</if>
+            <if test="coalSupplierId != null">#{coalSupplierId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCoalInfo" parameterType="CoalInfo">
+        update zr_coal_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="coalKind != null">coal_kind = #{coalKind},</if>
+            <if test="coalSize != null">coal_size = #{coalSize},</if>
+            <if test="coalPrice != null">coal_price = #{coalPrice},</if>
+            <if test="coalOriginPlace != null">coal_origin_place = #{coalOriginPlace},</if>
+            <if test="coalDecs != null">coal_decs = #{coalDecs},</if>
+            <if test="coalInventory != null">coal_inventory = #{coalInventory},</if>
+            <if test="coalSupplierId != null">coal_supplier_id = #{coalSupplierId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCoalInfoById" parameterType="Long">
+        delete from zr_coal_info where id = #{id}
+    </delete>
+
+    <delete id="deleteCoalInfoByIds" parameterType="String">
+        delete from zr_coal_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

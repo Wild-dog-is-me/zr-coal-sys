@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @Author: Odin
  * @Date: 2024/9/7 00:01
- * @Description:
+ * @Description: MyBatis-Plus自动填充处理器
  */
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
@@ -20,6 +20,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createTime", new LocalDateTime(), metaObject);
         this.setFieldValByName("updateTime", new LocalDateTime(), metaObject);
         this.setFieldValByName("createBy", SecurityUtils.getUsername(), metaObject);
+        this.setFieldValByName("updateBy", SecurityUtils.getUsername(), metaObject);
     }
 
     @Override

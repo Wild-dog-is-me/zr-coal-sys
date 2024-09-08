@@ -2,6 +2,9 @@ package com.zr.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.zr.manage.controller.vo.OrderInfoVO;
+import com.zr.manage.convert.OrderInfoConvert;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,8 +32,7 @@ import com.zr.common.core.page.TableDataInfo;
  */
 @RestController
 @RequestMapping("/manage/order")
-public class OrderInfoController extends BaseController
-{
+public class OrderInfoController extends BaseController {
     @Autowired
     private IOrderInfoService orderInfoService;
 
@@ -38,11 +40,10 @@ public class OrderInfoController extends BaseController
      * 查询订单信息列表
      */
     @GetMapping("/list")
-    public TableDataInfo list(OrderInfo orderInfo)
-    {
+    public TableDataInfo list(OrderInfo orderInfo) {
         startPage();
         List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo);
-        return getDataTable(list);
+        return getDataTable(OrderInfoConvert.convertVO(list));
     }
 
     /**
@@ -50,8 +51,7 @@ public class OrderInfoController extends BaseController
      */
     @Log(title = "订单信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, OrderInfo orderInfo)
-    {
+    public void export(HttpServletResponse response, OrderInfo orderInfo) {
         List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo);
         ExcelUtil<OrderInfo> util = new ExcelUtil<OrderInfo>(OrderInfo.class);
         util.exportExcel(response, list, "订单信息数据");
@@ -61,8 +61,7 @@ public class OrderInfoController extends BaseController
      * 获取订单信息详细信息
      */
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(orderInfoService.selectOrderInfoById(id));
     }
 
@@ -71,8 +70,7 @@ public class OrderInfoController extends BaseController
      */
     @Log(title = "订单信息", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody OrderInfo orderInfo)
-    {
+    public AjaxResult add(@RequestBody OrderInfo orderInfo) {
         return toAjax(orderInfoService.insertOrderInfo(orderInfo));
     }
 
@@ -81,8 +79,7 @@ public class OrderInfoController extends BaseController
      */
     @Log(title = "订单信息", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody OrderInfo orderInfo)
-    {
+    public AjaxResult edit(@RequestBody OrderInfo orderInfo) {
         return toAjax(orderInfoService.updateOrderInfo(orderInfo));
     }
 
@@ -90,9 +87,8 @@ public class OrderInfoController extends BaseController
      * 删除订单信息
      */
     @Log(title = "订单信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(orderInfoService.deleteOrderInfoByIds(ids));
     }
 }

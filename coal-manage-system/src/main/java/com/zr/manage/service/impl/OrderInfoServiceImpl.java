@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zr.common.exception.base.BaseException;
 import com.zr.common.utils.DateUtils;
@@ -11,8 +12,11 @@ import com.zr.common.utils.SecurityUtils;
 import com.zr.manage.controller.common.Constant;
 import com.zr.manage.controller.dto.CoalOrderDto;
 import com.zr.manage.controller.dto.CoalPurchaseDto;
+import com.zr.manage.domain.CheckInfo;
 import com.zr.manage.domain.CoalInfo;
+import com.zr.manage.mapper.CheckInfoMapper;
 import com.zr.manage.mapper.CoalInfoMapper;
+import com.zr.manage.util.RandomNumberGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zr.manage.mapper.OrderInfoMapper;
@@ -31,6 +35,8 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     private OrderInfoMapper orderInfoMapper;
     @Autowired
     private CoalInfoMapper coalInfoMapper;
+    @Autowired
+    private CheckInfoMapper checkInfoMapper;
 
     /**
      * 查询订单信息
@@ -123,7 +129,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         BigDecimal orderPrice = orderTonNum.multiply(coalPrice);
         // 3.2 初始化订单
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setOrderNo(IdUtil.simpleUUID());
+        orderInfo.setOrderNo(RandomNumberGenerator.gen());
         orderInfo.setOrderCoalId(coalId);
         orderInfo.setOrderStatus(Constant.ORDER_STATUS_CREATE);
         orderInfo.setOrderPayStatus(Constant.UN_PAY);
@@ -141,7 +147,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // ===========采购流程===========
         // 1.默认直接创建订单，订单支付完成关闭后添加库存
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setOrderNo(IdUtil.simpleUUID());
+        orderInfo.setOrderNo(RandomNumberGenerator.gen());
         // 2.计算订单价格
         Long coalId = dto.getCoalId();
         CoalInfo coalInfo = coalInfoMapper.selectById(coalId);
@@ -158,6 +164,37 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderBuyerPhone(Constant.PURCHASE_ORDER_PHONE);
         orderInfo.setOrderBuyerAddress(Constant.PURCHASE_ORDER_ADDRESS);
         orderInfo.setOrderHolderUserId(dto.getSupplierId());
+        this.save(orderInfo);
+    }
+
+    @Override
+    public void payDivide(String id, String payAmt) {
+        OrderInfo orderInfo = this.getById(id);
+        LambdaQueryWrapper<CheckInfo> qw = new LambdaQueryWrapper<>();
+        qw.eq(CheckInfo::getCheckPayRemark, orderInfo.getOrderNo());
+        List<CheckInfo> checkInfoList = checkInfoMapper.selectList(qw);
+        double sum = checkInfoList.stream()
+                .mapToDouble(checkInfo -> Double.parseDouble(String.valueOf(checkInfo.getCheckRevAmt())))
+                .sum();
+        BigDecimal sumBigDecimal = BigDecimal.valueOf(sum);
+        boolean result = sumBigDecimal.compareTo(orderInfo.getOrderPrice()) < 0;
+        if (!result) {
+            throw new BaseException("已支付超出所需支付金额，请重新修改支付金额");
+        }
+
+        CheckInfo checkInfo = new CheckInfo();
+        checkInfo.setCheckOrderId(orderInfo.getId());
+        checkInfo.setCheckRevAmt(new BigDecimal(payAmt));
+        checkInfo.setCheckPayName(orderInfo.getOrderBuyerName());
+        checkInfo.setCheckPayPhone(orderInfo.getOrderBuyerPhone());
+        checkInfo.setCheckPayRemark(orderInfo.getOrderNo());
+        checkInfo.setCheckHolderUserId(SecurityUtils.getUserId());
+        checkInfoMapper.insert(checkInfo);
+        if (sumBigDecimal.compareTo(orderInfo.getOrderPrice()) == 0) {
+            orderInfo.setOrderPayStatus(Constant.PAY_FINISH);
+        } else {
+            orderInfo.setOrderPayStatus(Constant.UN_PAY_FINISH);
+        }
         this.save(orderInfo);
     }
 }

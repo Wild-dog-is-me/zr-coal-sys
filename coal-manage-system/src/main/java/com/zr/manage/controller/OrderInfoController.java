@@ -3,20 +3,16 @@ package com.zr.manage.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zr.common.exception.base.BaseException;
+import com.zr.manage.controller.common.Constant;
+import com.zr.manage.controller.dto.DividePayDto;
 import com.zr.manage.controller.vo.OrderInfoVO;
 import com.zr.manage.convert.OrderInfoConvert;
 import com.zr.manage.service.ICoalInfoService;
 import com.zr.manage.service.impl.CoalInfoServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.zr.common.annotation.Log;
 import com.zr.common.core.controller.BaseController;
 import com.zr.common.core.domain.AjaxResult;
@@ -102,5 +98,48 @@ public class OrderInfoController extends BaseController {
     @GetMapping("/queryCoal")
     public AjaxResult queryCoal() {
         return AjaxResult.success(coalInfoService.list());
+    }
+
+    /**
+     * 发货
+     */
+    @GetMapping("/deliver")
+    public AjaxResult deliver(@RequestParam String id) {
+        OrderInfo orderInfo = orderInfoService.getById(id);
+        orderInfo.setOrderStatus(Constant.ORDER_STATUS_SEND);
+        orderInfoService.save(orderInfo);
+        return AjaxResult.success();
+    }
+
+    /**
+     * 收货
+     */
+    @GetMapping("/rev")
+    public AjaxResult rev(@RequestParam String id) {
+        OrderInfo orderInfo = orderInfoService.getById(id);
+        orderInfo.setOrderStatus(Constant.ORDER_STATUS_RCV);
+        orderInfoService.save(orderInfo);
+        return AjaxResult.success();
+    }
+
+    /**
+     * 一次性付款清帐
+     */
+    @GetMapping("/payFinish")
+    public AjaxResult payFinish(@RequestParam String id) {
+        OrderInfo orderInfo = orderInfoService.getById(id);
+        orderInfo.setOrderPayStatus(Constant.PAY_FINISH);
+        orderInfoService.save(orderInfo);
+        return AjaxResult.success();
+    }
+
+    /**
+     * 未一次性清账单 分批付款
+     * 校验是否超额支付，订单支付满额之后，自动支付完成
+     */
+    @GetMapping("/payDivide")
+    public AjaxResult payDivide(@RequestBody DividePayDto dto) {
+        orderInfoService.payDivide(dto.getId(), dto.getPayAmt());
+        return AjaxResult.success();
     }
 }

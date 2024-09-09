@@ -1,6 +1,14 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="订单编号" prop="orderNo">
+        <el-input
+          v-model="queryParams.orderNo"
+          placeholder="请输入订单编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="下单物料" prop="orderCoalId">
         <el-select v-model="queryParams.orderCoalId" placeholder="请选择下单物料" clearable>
           <el-option
@@ -70,12 +78,12 @@
       </el-table-column>
       <el-table-column label="订单状态" align="center" prop="orderStatus">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.order_transfer" :value="scope.row.coalKind"/>
+          <dict-tag :options="dict.type.order_transfer" :value="scope.row.orderStatus"/>
         </template>
       </el-table-column>
       <el-table-column label="支付状态" align="center" prop="orderPayStatus">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.order_pay" :value="scope.row.coalKind"/>
+          <dict-tag :options="dict.type.order_pay" :value="scope.row.orderPayStatus"/>
         </template>
       </el-table-column>
       <el-table-column label="订单金额" align="center" prop="orderPrice" />

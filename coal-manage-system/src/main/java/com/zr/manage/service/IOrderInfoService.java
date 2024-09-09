@@ -75,4 +75,5 @@ public interface IOrderInfoService extends IService<OrderInfo>
      */
     void purchase(CoalPurchaseDto dto);
 
+    void payDivide(String id, String payAmt);
 }

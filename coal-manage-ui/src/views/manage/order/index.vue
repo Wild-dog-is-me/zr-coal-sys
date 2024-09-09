@@ -1,69 +1,45 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="订单编号" prop="orderNo">
-        <el-input
-          v-model="queryParams.orderNo"
-          placeholder="请输入订单编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="下单物料" prop="orderCoalId">
-        <el-input
-          v-model="queryParams.orderCoalId"
-          placeholder="请输入下单物料"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.orderCoalId" placeholder="请选择下单物料" clearable>
+          <el-option
+            v-for="item in coalList"
+            :key="item.id"
+            :label="item.label"
+            :value="item.coalDecs"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="订单金额" prop="orderPrice">
-        <el-input
-          v-model="queryParams.orderPrice"
-          placeholder="请输入订单金额"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="订单类型" prop="orderRemark">
+        <el-select v-model="queryParams.orderRemark" placeholder="请选择订单类型" clearable>
+          <el-option
+            v-for="dict in dict.type.order_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="订单备注" prop="orderRemark">
-        <el-input
-          v-model="queryParams.orderRemark"
-          placeholder="请输入订单备注"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="流转状态" prop="orderStatus">
+        <el-select v-model="queryParams.orderStatus" placeholder="请选择流转状态" clearable>
+          <el-option
+            v-for="dict in dict.type.order_transfer"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="下单人" prop="orderBuyerName">
-        <el-input
-          v-model="queryParams.orderBuyerName"
-          placeholder="请输入下单人"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="下单人手机号" prop="orderBuyerPhone">
-        <el-input
-          v-model="queryParams.orderBuyerPhone"
-          placeholder="请输入下单人手机号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="收货地址" prop="orderBuyerAddress">
-        <el-input
-          v-model="queryParams.orderBuyerAddress"
-          placeholder="请输入收货地址"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="订单添加人ID" prop="orderHolderUserId">
-        <el-input
-          v-model="queryParams.orderHolderUserId"
-          placeholder="请输入订单添加人ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="支付状态" prop="orderPayStatus">
+        <el-select v-model="queryParams.orderPayStatus" placeholder="请选择流转状态" clearable>
+          <el-option
+            v-for="dict in dict.type.order_pay"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -72,38 +48,6 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['manage:order:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['manage:order:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['manage:order:remove']"
-        >删除</el-button>
-      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -118,18 +62,32 @@
     </el-row>
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
       <el-table-column label="订单编号" align="center" prop="orderNo" />
-      <el-table-column label="下单物料" align="center" prop="orderCoalId" />
-      <el-table-column label="订单状态" align="center" prop="orderStatus" />
-      <el-table-column label="支付状态" align="center" prop="orderPayStatus" />
+      <el-table-column label="下单物料" align="center" prop="coalKind">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="订单状态" align="center" prop="orderStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.order_transfer" :value="scope.row.coalKind"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="支付状态" align="center" prop="orderPayStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.order_pay" :value="scope.row.coalKind"/>
+        </template>
+      </el-table-column>
       <el-table-column label="订单金额" align="center" prop="orderPrice" />
-      <el-table-column label="订单备注" align="center" prop="orderRemark" />
+      <el-table-column label="订单类型" align="center" prop="orderRemark">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.order_type" :value="scope.row.orderRemark"/>
+        </template>
+      </el-table-column>
       <el-table-column label="下单人" align="center" prop="orderBuyerName" />
       <el-table-column label="下单人手机号" align="center" prop="orderBuyerPhone" />
       <el-table-column label="收货地址" align="center" prop="orderBuyerAddress" />
-      <el-table-column label="订单添加人ID" align="center" prop="orderHolderUserId" />
+      <el-table-column label="订单添加人" align="center" prop="orderHolderUserName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -149,7 +107,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -195,14 +153,16 @@
 </template>
 
 <script>
-import { listOrder, getOrder, delOrder, addOrder, updateOrder } from "@/api/manage/order";
+import { listOrder, getOrder, delOrder, addOrder, updateOrder,queryCoalList } from "@/api/manage/order";
 
 export default {
   name: "Order",
+  dicts: ['order_transfer', 'order_pay','order_type','coal_kind'],
   data() {
     return {
       // 遮罩层
       loading: true,
+      coalList:[],
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -242,9 +202,15 @@ export default {
     };
   },
   created() {
+    this.getCoalList();
     this.getList();
   },
   methods: {
+    getCoalList(){
+      queryCoalList().then(res => {
+        this.coalList = res.data;
+      })
+    },
     /** 查询订单信息列表 */
     getList() {
       this.loading = true;

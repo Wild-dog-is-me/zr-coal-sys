@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zr.manage.controller.vo.OrderInfoVO;
 import com.zr.manage.convert.OrderInfoConvert;
+import com.zr.manage.service.ICoalInfoService;
+import com.zr.manage.service.impl.CoalInfoServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,8 @@ import com.zr.common.core.page.TableDataInfo;
 public class OrderInfoController extends BaseController {
     @Autowired
     private IOrderInfoService orderInfoService;
+    @Autowired
+    private ICoalInfoService coalInfoService;
 
     /**
      * 查询订单信息列表
@@ -90,5 +94,13 @@ public class OrderInfoController extends BaseController {
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(orderInfoService.deleteOrderInfoByIds(ids));
+    }
+
+    /**
+     * 查询物料
+     */
+    @GetMapping("/queryCoal")
+    public AjaxResult queryCoal() {
+        return AjaxResult.success(coalInfoService.list());
     }
 }

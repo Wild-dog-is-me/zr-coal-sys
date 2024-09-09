@@ -42,3 +42,10 @@ export function delOrder(id) {
     method: 'delete'
   })
 }
+
+export function queryCoalList() {
+  return request({
+    url: '/manage/order/queryCoal',
+    method: 'get'
+  })
+}

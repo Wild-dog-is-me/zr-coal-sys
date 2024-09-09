@@ -60,6 +60,17 @@
         >导出
         </el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-s-promotion"
+          size="mini"
+          @click="purchaseAdd"
+        >采购煤矿
+        </el-button>
+      </el-col>
+
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -99,14 +110,13 @@
             v-hasPermi="['manage:coal:edit']"
           >修改
           </el-button>
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-delete"-->
-<!--            @click="handleDelete(scope.row)"-->
-<!--            v-hasPermi="['manage:coal:remove']"-->
-<!--          >删除-->
-<!--          </el-button>-->
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="addOrder(scope.row)"
+          >下单
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,6 +128,61 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+    <el-dialog :title="addCoalOrderTitle" :visible.sync="openCoalOrder" width="500px" append-to-body>
+      <el-form ref="addOrderForm" :model="addOrderForm" label-width="80px">
+        <el-form-item label="下单吨数" prop="orderTon">
+          <el-input-number v-model="addOrderForm.orderTon" :precision="2"
+                           :step="0.5" :max="100" placeholder="下单吨数"/>
+        </el-form-item>
+        <el-form-item label="下单人" prop="orderBuyName">
+          <el-input v-model="addOrderForm.orderBuyName" placeholder="请输入下单人"/>
+        </el-form-item>
+        <el-form-item label="联系方式" prop="orderBuyerPhone">
+          <el-input v-model="addOrderForm.orderBuyerPhone" placeholder="请输入下单人联系方式"/>
+        </el-form-item>
+        <el-form-item label="收货地址" prop="orderRevAddress">
+          <el-input v-model="addOrderForm.orderRevAddress" placeholder="请输入收货地址"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitCoalOrder">下 单</el-button>
+        <el-button @click="cancelOrder">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="purchaseTitle" :visible.sync="openPurchase" width="500px" append-to-body>
+      <el-form ref="purchaseForm" :model="purchaseForm" label-width="80px">
+        <el-form-item label="下单物料" prop="coalId">
+          <el-select v-model="purchaseForm.coalId" placeholder="请选择下单物料" clearable>
+            <el-option
+              v-for="item in coalList"
+              :key="item.id"
+              :label="item.coalDecs"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="采购吨数" prop="orderTon">
+          <el-input-number v-model="purchaseForm.orderTon" :precision="2"
+                           :step="0.5" :max="100" placeholder="采购吨数"/>
+        </el-form-item>
+        <el-form-item label="供应商" prop="supplierId">
+          <el-select v-model="purchaseForm.supplierId" placeholder="请选择供应商" clearable>
+            <el-option
+              v-for="item in supplierList"
+              :key="item.id"
+              :label="item.supplierName"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitPurchase">下 单</el-button>
+        <el-button @click="cancelPurchase">取 消</el-button>
+      </div>
+    </el-dialog>
 
     <!-- 添加或修改煤矿信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
@@ -168,8 +233,18 @@
 </template>
 
 <script>
-import {listCoal, getCoal, delCoal, addCoal, updateCoal, listSupplierList} from "@/api/manage/coal";
+import {
+  listCoal,
+  getCoal,
+  delCoal,
+  addCoal,
+  updateCoal,
+  listSupplierList,
+  purchaseOrder,
+  saleOrder
+} from "@/api/manage/coal";
 import {listSupplier} from "@/api/manage/supplier";
+
 export default {
   name: "Coal",
   dicts: ['coal_size', 'coal_kind'],
@@ -186,6 +261,7 @@ export default {
       multiple: true,
       // 显示搜索条件
       showSearch: true,
+      disableFlag: true,
       // 总条数
       total: 0,
       // 煤矿信息表格数据
@@ -194,6 +270,10 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      openPurchase: false,
+      openCoalOrder: false,
+      purchaseTitle: "",
+      addCoalOrderTitle: "",
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -208,6 +288,8 @@ export default {
       },
       // 表单参数
       form: {},
+      purchaseForm: {},
+      addOrderForm: {},
       // 表单校验
       rules: {}
     };
@@ -235,6 +317,30 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+    cancelPurchase() {
+      this.openPurchase = false;
+      this.resetPurchaseForm();
+    },
+    cancelOrder() {
+      this.openCoalOrder = false;
+      this.resetAddCoalOrder();
+    },
+    resetPurchaseForm() {
+      this.purchaseForm = {
+        coalId: null,
+        orderTon: null,
+        supplierId: null
+      }
+    },
+    resetAddCoalOrder() {
+      this.addOrderForm = {
+        coalId: null,
+        orderTon: null,
+        orderBuyName: null,
+        orderBuyerPhone: null,
+        orderRevAddress: null
+      }
     },
     // 表单重置
     reset() {
@@ -276,6 +382,11 @@ export default {
       this.open = true;
       this.title = "添加煤矿信息";
     },
+    purchaseAdd() {
+      this.resetPurchaseForm();
+      this.openPurchase = true;
+      this.purchaseTitle = "添加采购信息"
+    },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
@@ -284,6 +395,15 @@ export default {
         this.form = response.data;
         this.open = true;
         this.title = "修改煤矿信息";
+      });
+    },
+    addOrder(row) {
+      this.resetAddCoalOrder();
+      const id = row.id
+      getCoal(id).then(res => {
+        this.addCoalOrderTitle = "添加订单";
+        this.addOrderForm.coalId = res.data.id
+        this.openCoalOrder = true
       });
     },
     /** 提交按钮 */
@@ -306,23 +426,38 @@ export default {
         }
       });
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除煤矿信息编号为"' + ids + '"的数据项？').then(function () {
-        return delCoal(ids);
-      }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {
-      });
+    submitCoalOrder() {
+      saleOrder(this.addOrderForm).then(res => {
+        this.$modal.msgSuccess("下单成功");
+        this.openCoalOrder = false;
+        this.getList()
+      })
     },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('manage/coal/export', {
-        ...this.queryParams
-      }, `coal_${new Date().getTime()}.xlsx`)
+    submitPurchase() {
+      purchaseOrder(this.purchaseForm).then(response => {
+        this.$modal.msgSuccess("下单成功");
+        this.openPurchase = false;
+        this.getList();
+      });
     }
+  },
+  /** 删除按钮操作 */
+  handleDelete(row) {
+    const ids = row.id || this.ids;
+    this.$modal.confirm('是否确认删除煤矿信息编号为"' + ids + '"的数据项？').then(function () {
+      return delCoal(ids);
+    }).then(() => {
+      this.getList();
+      this.$modal.msgSuccess("删除成功");
+    }).catch(() => {
+    });
+  }
+  ,
+  /** 导出按钮操作 */
+  handleExport() {
+    this.download('manage/coal/export', {
+      ...this.queryParams
+    }, `coal_${new Date().getTime()}.xlsx`)
   }
 };
 </script>

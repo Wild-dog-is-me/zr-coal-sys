@@ -50,3 +50,21 @@ export function listSupplierList() {
     method: 'get'
   })
 }
+
+// 采购煤矿
+export function purchaseOrder(data) {
+  return request({
+    url: '/manage/coal/purchase',
+    method: 'post',
+    data: data
+  })
+}
+
+// 销售煤矿
+export function saleOrder(data) {
+  return request({
+    url: 'manage/coal/sale',
+    method: 'post',
+    data: data
+  })
+}

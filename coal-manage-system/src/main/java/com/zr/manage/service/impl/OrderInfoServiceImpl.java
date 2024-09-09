@@ -110,7 +110,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         // 1. 判断库存是否充足
         BigDecimal coalInventoryNum = new BigDecimal(coalInventory);
         BigDecimal orderTonNum = new BigDecimal(orderTon);
-        if (orderTonNum.compareTo(coalInventoryNum) < 0) {
+        if (coalInventoryNum.compareTo(orderTonNum) < 0) {
             throw new BaseException("库存不足");
         }
         // 2.扣减库存

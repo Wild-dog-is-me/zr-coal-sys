@@ -93,6 +93,11 @@
       </el-table-column>
       <el-table-column label="产品描述" align="center" prop="coalDecs"/>
       <el-table-column label="产品库存(吨)" align="center" prop="coalInventory"/>
+      <el-table-column label="预览图" align="center" prop="fileUrl" width="100">
+        <template slot-scope="scope">
+          <image-preview :src="scope.row.fileUrl" :width="50" :height="50"/>
+        </template>
+      </el-table-column>
       <el-table-column label="供应商" align="center" prop="supplierName"/>
       <el-table-column label="供应商联系人" align="center" prop="supplierPerson">
         <template slot-scope="scope">
@@ -154,12 +159,12 @@
     <el-dialog :title="purchaseTitle" :visible.sync="openPurchase" width="500px" append-to-body>
       <el-form ref="purchaseForm" :model="purchaseForm" label-width="80px">
         <el-form-item label="下单物料" prop="coalId">
-          <el-select v-model="purchaseForm.coalId" placeholder="请选择下单物料" clearable>
+          <el-select v-model="form.coalKind" placeholder="请选择类型" clearable>
             <el-option
-              v-for="item in coalList"
-              :key="item.id"
-              :label="item.coalDecs"
-              :value="item.id"
+              v-for="dict in dict.type.coal_kind"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
             />
           </el-select>
         </el-form-item>

@@ -2,6 +2,9 @@ package com.zr.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.zr.manage.controller.vo.CheckInfoVO;
+import com.zr.manage.convert.CheckInfoConvert;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +45,8 @@ public class CheckInfoController extends BaseController
     {
         startPage();
         List<CheckInfo> list = checkInfoService.selectCheckInfoList(checkInfo);
-        return getDataTable(list);
+        List<CheckInfoVO> checkInfoVOS = CheckInfoConvert.convertVO(list);
+        return getDataTable(checkInfoVOS);
     }
 
     /**

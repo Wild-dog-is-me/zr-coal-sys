@@ -1,12 +1,16 @@
 package com.zr.manage.convert;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zr.common.utils.spring.SpringUtils;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.domain.CoalInfo;
+import com.zr.manage.domain.FileInfo;
 import com.zr.manage.domain.SupplierInfo;
+import com.zr.manage.mapper.FileInfoMapper;
 import com.zr.manage.mapper.SupplierInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: Odin
@@ -26,18 +31,29 @@ public class CoalInfoConvert {
 
     @Autowired
     private SupplierInfoMapper sm;
+    @Autowired
+    private FileInfoMapper fm;
 
+    public static FileInfoMapper fileInfoMapper;
     public static SupplierInfoMapper supplierInfoMapper;
 
     @PostConstruct
     public void init() {
         supplierInfoMapper = sm;
+        fileInfoMapper = fm;
     }
 
     public static CoalInfoVO convertVO(CoalInfo coalInfo) {
         CoalInfoVO coalInfoVO = BeanUtil.copyProperties(coalInfo, CoalInfoVO.class);
         SupplierInfo supplierInfo = supplierInfoMapper.selectById(coalInfo.getCoalSupplierId());
+        LambdaQueryWrapper<FileInfo> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(FileInfo::getObjectId, coalInfo.getId());
+        List<FileInfo> fileInfos = fileInfoMapper.selectList(lqw);
         if (ObjectUtil.isNotNull(supplierInfo)) {
+            if (!CollectionUtil.isEmpty(fileInfos)) {
+                coalInfoVO.setFileUrl(fileInfos.get(0).getFileUrl());
+                coalInfoVO.setFileUrls(fileInfos.stream().map(FileInfo::getFileUrl).collect(Collectors.toList()));
+            }
             coalInfoVO.setSupplierName(supplierInfo.getSupplierName());
             coalInfoVO.setSupplierPhone(supplierInfo.getSupplierPhone());
             coalInfoVO.setSupplierPerson(supplierInfo.getSupplierPerson());

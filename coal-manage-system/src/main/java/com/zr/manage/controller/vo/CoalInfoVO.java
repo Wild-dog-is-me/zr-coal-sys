@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @Author: Odin
@@ -47,5 +48,9 @@ public class CoalInfoVO extends BaseEntity {
     private String supplierPerson;
     /** 供应商联系方式 */
     private String supplierPhone;
+
+    private List<String> fileUrls;
+
+    private String fileUrl;
 
 }

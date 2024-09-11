@@ -1,5 +1,6 @@
 package com.zr.manage.controller.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.zr.common.annotation.Excel;
@@ -7,6 +8,8 @@ import com.zr.common.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * @Author: Odin
@@ -47,4 +50,7 @@ public class OrderInfoVO extends BaseEntity {
     private String orderHolderUserId;
 
     private String orderHolderUserName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 }

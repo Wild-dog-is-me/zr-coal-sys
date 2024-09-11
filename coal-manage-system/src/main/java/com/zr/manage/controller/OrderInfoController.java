@@ -1,13 +1,18 @@
 package com.zr.manage.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zr.common.core.domain.model.LoginUser;
 import com.zr.common.exception.base.BaseException;
+import com.zr.common.utils.SecurityUtils;
 import com.zr.manage.controller.common.Constant;
 import com.zr.manage.controller.dto.DividePayDto;
 import com.zr.manage.controller.vo.OrderInfoVO;
 import com.zr.manage.convert.OrderInfoConvert;
+import com.zr.manage.domain.CheckInfo;
+import com.zr.manage.service.ICheckInfoService;
 import com.zr.manage.service.ICoalInfoService;
 import com.zr.manage.service.impl.CoalInfoServiceImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +40,8 @@ public class OrderInfoController extends BaseController {
     private IOrderInfoService orderInfoService;
     @Autowired
     private ICoalInfoService coalInfoService;
+    @Autowired
+    private ICheckInfoService checkInfoService;
 
     /**
      * 查询订单信息列表
@@ -42,6 +49,10 @@ public class OrderInfoController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo list(OrderInfo orderInfo) {
         startPage();
+        boolean admin = SecurityUtils.getLoginUser().equals("admin");
+        if (!admin) {
+            orderInfo.setOrderHolderUserId(SecurityUtils.getUserId());
+        }
         List<OrderInfo> list = orderInfoService.selectOrderInfoList(orderInfo);
         return getDataTable(OrderInfoConvert.convertVO(list));
     }
@@ -106,8 +117,12 @@ public class OrderInfoController extends BaseController {
     @GetMapping("/deliver")
     public AjaxResult deliver(@RequestParam String id) {
         OrderInfo orderInfo = orderInfoService.getById(id);
+        String orderPayStatus = orderInfo.getOrderPayStatus();
+        if (orderPayStatus.equals(Constant.UN_PAY)) {
+            throw new BaseException("未付款，无法发货");
+        }
         orderInfo.setOrderStatus(Constant.ORDER_STATUS_SEND);
-        orderInfoService.save(orderInfo);
+        orderInfoService.updateById(orderInfo);
         return AjaxResult.success();
     }
 
@@ -117,8 +132,17 @@ public class OrderInfoController extends BaseController {
     @GetMapping("/rev")
     public AjaxResult rev(@RequestParam String id) {
         OrderInfo orderInfo = orderInfoService.getById(id);
+        if (!orderInfo.getOrderStatus().equals(Constant.ORDER_STATUS_SEND)) {
+            throw new BaseException("未发货，正在加急备货中");
+        }
+        if (!orderInfo.getOrderPayStatus().equals(Constant.PAY_FINISH)) {
+            throw new BaseException("未付清款项，无法收货");
+        }
+        if (!orderInfo.getOrderStatus().equals(Constant.ORDER_STATUS_RCV)) {
+            throw new BaseException("请勿重复确认收货");
+        }
         orderInfo.setOrderStatus(Constant.ORDER_STATUS_RCV);
-        orderInfoService.save(orderInfo);
+        orderInfoService.updateById(orderInfo);
         return AjaxResult.success();
     }
 
@@ -127,9 +151,30 @@ public class OrderInfoController extends BaseController {
      */
     @GetMapping("/payFinish")
     public AjaxResult payFinish(@RequestParam String id) {
+        // 更新订单表
         OrderInfo orderInfo = orderInfoService.getById(id);
+        if (orderInfo.getOrderPayStatus().equals(Constant.UN_PAY_FINISH)) {
+            throw new BaseException("已选择分期付款方式，无法直接支付");
+        }
+        if (orderInfo.getOrderPayStatus().equals(Constant.PAY_FINISH)) {
+            throw new BaseException("此订单已付款");
+        }
         orderInfo.setOrderPayStatus(Constant.PAY_FINISH);
-        orderInfoService.save(orderInfo);
+        orderInfoService.updateById(orderInfo);
+        // 插入账单
+        CheckInfo checkInfo = new CheckInfo();
+        checkInfo.setCheckOrderId(orderInfo.getId());
+        checkInfo.setCheckRevAmt(orderInfo.getOrderPrice());
+        checkInfo.setCheckPayName(orderInfo.getOrderBuyerName());
+        checkInfo.setCheckPayPhone(orderInfo.getOrderBuyerPhone());
+        StringBuffer sb = new StringBuffer();
+        sb.append("订单编号:");
+        sb.append(orderInfo.getOrderNo());
+        sb.append(" 全额付款");
+        sb.append("付款金额:" + orderInfo.getOrderPrice());
+        checkInfo.setCheckPayRemark(sb.toString());
+        checkInfo.setCheckHolderUserId(SecurityUtils.getUserId());
+        checkInfoService.save(checkInfo);
         return AjaxResult.success();
     }
 
@@ -137,7 +182,7 @@ public class OrderInfoController extends BaseController {
      * 未一次性清账单 分批付款
      * 校验是否超额支付，订单支付满额之后，自动支付完成
      */
-    @GetMapping("/payDivide")
+    @PostMapping("/payDivide")
     public AjaxResult payDivide(@RequestBody DividePayDto dto) {
         orderInfoService.payDivide(dto.getId(), dto.getPayAmt());
         return AjaxResult.success();

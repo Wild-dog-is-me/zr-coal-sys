@@ -170,31 +170,52 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
     @Override
     public void payDivide(String id, String payAmt) {
         OrderInfo orderInfo = this.getById(id);
+        if (orderInfo.getOrderPayStatus().equals(Constant.PAY_FINISH)) {
+            throw new BaseException("已完成支付，请勿重复支付");
+        }
         LambdaQueryWrapper<CheckInfo> qw = new LambdaQueryWrapper<>();
-        qw.eq(CheckInfo::getCheckPayRemark, orderInfo.getOrderNo());
+        qw.eq(CheckInfo::getCheckOrderId, orderInfo.getId());
         List<CheckInfo> checkInfoList = checkInfoMapper.selectList(qw);
         double sum = checkInfoList.stream()
                 .mapToDouble(checkInfo -> Double.parseDouble(String.valueOf(checkInfo.getCheckRevAmt())))
                 .sum();
-        BigDecimal sumBigDecimal = BigDecimal.valueOf(sum);
-        boolean result = sumBigDecimal.compareTo(orderInfo.getOrderPrice()) < 0;
-        if (!result) {
-            throw new BaseException("已支付超出所需支付金额，请重新修改支付金额");
-        }
+        BigDecimal sumBigDecimal = new BigDecimal(0);
+        BigDecimal sub = new BigDecimal(0);
+        if (!Double.isNaN(sum)) {
+            sumBigDecimal = BigDecimal.valueOf(sum);
+            boolean result = sumBigDecimal.compareTo(orderInfo.getOrderPrice()) < 0;
+            if (!result) {
+                throw new BaseException("已支付超出所需支付金额，请重新修改支付金额");
+            }
 
+            sub = orderInfo.getOrderPrice().subtract(sumBigDecimal).subtract(new BigDecimal(payAmt));
+        } else {
+            sub = orderInfo.getOrderPrice().subtract(new BigDecimal(payAmt));
+        }
         CheckInfo checkInfo = new CheckInfo();
         checkInfo.setCheckOrderId(orderInfo.getId());
         checkInfo.setCheckRevAmt(new BigDecimal(payAmt));
         checkInfo.setCheckPayName(orderInfo.getOrderBuyerName());
         checkInfo.setCheckPayPhone(orderInfo.getOrderBuyerPhone());
-        checkInfo.setCheckPayRemark(orderInfo.getOrderNo());
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("订单编号:");
+        sb.append(orderInfo.getOrderNo());
+        sb.append(" 分期付款");
+        sb.append("付款金额:" + payAmt);
+        if ((sub.compareTo(BigDecimal.ZERO)) == 0) {
+            sb.append(",已支付完成");
+        } else {
+            sb.append(",仍需支付:" + sub);
+        }
+        checkInfo.setCheckPayRemark(sb.toString());
         checkInfo.setCheckHolderUserId(SecurityUtils.getUserId());
         checkInfoMapper.insert(checkInfo);
-        if (sumBigDecimal.compareTo(orderInfo.getOrderPrice()) == 0) {
+        if (sub.compareTo(orderInfo.getOrderPrice()) == 0||sub.compareTo(BigDecimal.ZERO) == 0) {
             orderInfo.setOrderPayStatus(Constant.PAY_FINISH);
         } else {
             orderInfo.setOrderPayStatus(Constant.UN_PAY_FINISH);
         }
-        this.save(orderInfo);
+        this.updateById(orderInfo);
     }
 }

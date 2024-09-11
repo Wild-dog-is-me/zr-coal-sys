@@ -49,3 +49,33 @@ export function queryCoalList() {
     method: 'get'
   })
 }
+
+export function deliverOrder(id) {
+  return request({
+    url: '/manage/order/deliver?id=' + id,
+    method: "get"
+  })
+}
+
+export function revOrder(id) {
+  return request({
+    url: '/manage/order/rev?id=' + id,
+    method: "get"
+  })
+}
+
+export function payFinishOrder(id) {
+  return request({
+    url: '/manage/order/payFinish?id=' + id,
+    method: "get"
+  })
+}
+
+export function partPay(data){
+  return request({
+    url: '/manage/order/payDivide',
+    method: "post",
+    data: data,
+  })
+}
+

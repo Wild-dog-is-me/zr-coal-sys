@@ -1,31 +1,23 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="订单ID" prop="checkOrderId">
-      </el-form-item>
-      <el-form-item label="支付人" prop="checkPayName">
+      <el-form-item label="文件名" prop="fileName">
         <el-input
-          v-model="queryParams.checkPayName"
-          placeholder="请输入支付人"
+          v-model="queryParams.fileName"
+          placeholder="请输入文件名"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="支付人联系方式" prop="checkPayPhone">
-        <el-input
-          v-model="queryParams.checkPayPhone"
-          placeholder="请输入支付人联系方式"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="订单编号" prop="checkPayRemark">
-        <el-input
-          v-model="queryParams.checkPayRemark"
-          placeholder="请输入订单编号"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="商品" prop="objectId">
+        <el-select v-model="queryParams.objectId" placeholder="请选择" clearable>
+          <el-option
+            v-for="dict in dict.type.coal_kind"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -41,8 +33,9 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['manage:check:add']"
-        >新增</el-button>
+          v-hasPermi="['manage:file:add']"
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -52,8 +45,9 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['manage:check:edit']"
-        >修改</el-button>
+          v-hasPermi="['manage:file:edit']"
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -63,8 +57,9 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['manage:check:remove']"
-        >删除</el-button>
+          v-hasPermi="['manage:file:remove']"
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -73,24 +68,25 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['manage:check:export']"
-        >导出</el-button>
+          v-hasPermi="['manage:file:export']"
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="checkList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="商品" align="center" prop="coalKind">
+    <el-table v-loading="loading" :data="fileList" @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="主键" align="center" prop="id"/>
+      <el-table-column label="文件名" align="center" prop="fileName"/>
+      <el-table-column label="文件URL" align="center" prop="fileUrl" width="100">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>
+          <image-preview :src="scope.row.fileUrl" :width="50" :height="50"/>
         </template>
       </el-table-column>
-      <el-table-column label="收款金额" align="center" prop="checkRevAmt" />
-      <el-table-column label="支付人" align="center" prop="checkPayName" />
-      <el-table-column label="支付人联系方式" align="center" prop="checkPayPhone" />
-      <el-table-column label="支付备注" align="center" prop="checkPayRemark" />
-      <el-table-column label="支付时间" align="center" prop="createTime" />
+      <el-table-column label="商品" align="center" prop="objectId">
+
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -98,15 +94,17 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['manage:check:edit']"
-          >修改</el-button>
+            v-hasPermi="['manage:file:edit']"
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['manage:check:remove']"
-          >删除</el-button>
+            v-hasPermi="['manage:file:remove']"
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,26 +117,17 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改账单信息对话框 -->
+    <!-- 添加或修改文件对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="订单ID" prop="checkOrderId">
-          <el-input v-model="form.checkOrderId" placeholder="请输入订单ID" />
+        <el-form-item label="文件名" prop="fileName">
+          <el-input v-model="form.fileName" placeholder="请输入文件名"/>
         </el-form-item>
-        <el-form-item label="收款金额" prop="checkRevAmt">
-          <el-input v-model="form.checkRevAmt" placeholder="请输入收款金额" />
+        <el-form-item label="文件URL" prop="fileUrl">
+          <image-upload v-model="form.fileUrl"/>
         </el-form-item>
-        <el-form-item label="支付人" prop="checkPayName">
-          <el-input v-model="form.checkPayName" placeholder="请输入支付人" />
-        </el-form-item>
-        <el-form-item label="支付人联系方式" prop="checkPayPhone">
-          <el-input v-model="form.checkPayPhone" placeholder="请输入支付人联系方式" />
-        </el-form-item>
-        <el-form-item label="支付备注" prop="checkPayRemark">
-          <el-input v-model="form.checkPayRemark" placeholder="请输入支付备注" />
-        </el-form-item>
-        <el-form-item label="收款人" prop="checkHolderUserId">
-          <el-input v-model="form.checkHolderUserId" placeholder="请输入收款人" />
+        <el-form-item label="业务ID" prop="objectId">
+          <el-input v-model="form.objectId" placeholder="请输入业务ID"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,11 +139,12 @@
 </template>
 
 <script>
-import { listCheck, getCheck, delCheck, addCheck, updateCheck } from "@/api/manage/check";
+import {listFile, getFile, delFile, addFile, updateFile} from "@/api/manage/file";
+
 
 export default {
-  name: "Check",
-  dicts: ['coal_kind'],
+  name: "File",
+  dicts: ['coal_size', 'coal_kind'],
   data() {
     return {
       // 遮罩层
@@ -169,8 +159,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 账单信息表格数据
-      checkList: [],
+      // 文件表格数据
+      fileList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -179,29 +169,25 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        checkOrderId: null,
-        checkRevAmt: null,
-        checkPayName: null,
-        checkPayPhone: null,
-        checkPayRemark: null,
-        checkHolderUserId: null
+        fileName: null,
+        fileUrl: null,
+        objectId: null
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    /** 查询账单信息列表 */
+    /** 查询文件列表 */
     getList() {
       this.loading = true;
-      listCheck(this.queryParams).then(response => {
-        this.checkList = response.rows;
+      listFile(this.queryParams).then(response => {
+        this.fileList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -219,12 +205,9 @@ export default {
         updateBy: null,
         createTime: null,
         updateTime: null,
-        checkOrderId: null,
-        checkRevAmt: null,
-        checkPayName: null,
-        checkPayPhone: null,
-        checkPayRemark: null,
-        checkHolderUserId: null
+        fileName: null,
+        fileUrl: null,
+        objectId: null
       };
       this.resetForm("form");
     },
@@ -241,23 +224,23 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加账单信息";
+      this.title = "添加文件";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getCheck(id).then(response => {
+      getFile(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改账单信息";
+        this.title = "修改文件";
       });
     },
     /** 提交按钮 */
@@ -265,13 +248,13 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
-            updateCheck(this.form).then(response => {
+            updateFile(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addCheck(this.form).then(response => {
+            addFile(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -283,18 +266,19 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除账单信息编号为"' + ids + '"的数据项？').then(function() {
-        return delCheck(ids);
+      this.$modal.confirm('是否确认删除文件编号为"' + ids + '"的数据项？').then(function () {
+        return delFile(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('manage/check/export', {
+      this.download('manage/file/export', {
         ...this.queryParams
-      }, `check_${new Date().getTime()}.xlsx`)
+      }, `file_${new Date().getTime()}.xlsx`)
     }
   }
 };

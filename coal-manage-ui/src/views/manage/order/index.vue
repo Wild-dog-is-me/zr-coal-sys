@@ -10,12 +10,12 @@
         />
       </el-form-item>
       <el-form-item label="下单物料" prop="orderCoalId">
-        <el-select v-model="queryParams.orderCoalId" placeholder="请选择下单物料" clearable>
+        <el-select v-model="form.coalKind" placeholder="请选择类型" clearable>
           <el-option
-            v-for="item in coalList"
-            :key="item.id"
-            :label="item.label"
-            :value="item.coalDecs"
+            v-for="dict in dict.type.coal_kind"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -64,13 +64,14 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['manage:order:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="orderList" @selection-change="handleSelectionChange">
-      <el-table-column label="订单编号" align="center" prop="orderNo" />
+      <el-table-column label="订单编号" align="center" prop="orderNo"/>
       <el-table-column label="下单物料" align="center" prop="coalKind">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>
@@ -86,16 +87,17 @@
           <dict-tag :options="dict.type.order_pay" :value="scope.row.orderPayStatus"/>
         </template>
       </el-table-column>
-      <el-table-column label="订单金额" align="center" prop="orderPrice" />
+      <el-table-column label="订单金额" align="center" prop="orderPrice"/>
       <el-table-column label="订单类型" align="center" prop="orderRemark">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.order_type" :value="scope.row.orderRemark"/>
         </template>
       </el-table-column>
-      <el-table-column label="下单人" align="center" prop="orderBuyerName" />
-      <el-table-column label="下单人手机号" align="center" prop="orderBuyerPhone" />
-      <el-table-column label="收货地址" align="center" prop="orderBuyerAddress" />
-      <el-table-column label="订单添加人" align="center" prop="orderHolderUserName" />
+      <el-table-column label="订单创建时间" align="center" prop="createTime" />
+      <el-table-column label="下单人" align="center" prop="orderBuyerName"/>
+      <el-table-column label="下单人手机号" align="center" prop="orderBuyerPhone"/>
+      <el-table-column label="收货地址" align="center" prop="orderBuyerAddress"/>
+      <el-table-column label="订单添加人" align="center" prop="orderHolderUserName"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -104,14 +106,32 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['manage:order:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['manage:order:remove']"
-          >删除</el-button>
+            @click="handleDeliver(scope.row)"
+          >发货
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleRec(scope.row)"
+          >确认收货
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handlePay(scope.row)"
+          >全额付款
+          </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handlePartPay(scope.row)"
+          >分期支付
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -124,32 +144,35 @@
       @pagination="getList"
     />
 
+    <el-dialog :title="partPayTitle" :visible.sync="partPayFlag" width="500px" append-to-body>
+      <el-form ref="partPayForm" :model="partPayForm" label-width="80px">
+        <el-form-item label="分期支付金额" prop="payAmt">
+          <el-input v-model="partPayForm.payAmt" placeholder="请输入分期付款金额"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitPartPay">确 定</el-button>
+        <el-button @click="cancelPartPay">取 消</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 添加或修改订单信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="订单编号" prop="orderNo">
-          <el-input v-model="form.orderNo" placeholder="请输入订单编号" />
-        </el-form-item>
-        <el-form-item label="下单物料" prop="orderCoalId">
-          <el-input v-model="form.orderCoalId" placeholder="请输入下单物料" />
+          <el-input v-model="form.orderNo" placeholder="请输入订单编号"/>
         </el-form-item>
         <el-form-item label="订单金额" prop="orderPrice">
-          <el-input v-model="form.orderPrice" placeholder="请输入订单金额" />
-        </el-form-item>
-        <el-form-item label="订单备注" prop="orderRemark">
-          <el-input v-model="form.orderRemark" placeholder="请输入订单备注" />
+          <el-input v-model="form.orderPrice" placeholder="请输入订单金额"/>
         </el-form-item>
         <el-form-item label="下单人" prop="orderBuyerName">
-          <el-input v-model="form.orderBuyerName" placeholder="请输入下单人" />
+          <el-input v-model="form.orderBuyerName" placeholder="请输入下单人"/>
         </el-form-item>
         <el-form-item label="下单人手机号" prop="orderBuyerPhone">
-          <el-input v-model="form.orderBuyerPhone" placeholder="请输入下单人手机号" />
+          <el-input v-model="form.orderBuyerPhone" placeholder="请输入下单人手机号"/>
         </el-form-item>
         <el-form-item label="收货地址" prop="orderBuyerAddress">
-          <el-input v-model="form.orderBuyerAddress" placeholder="请输入收货地址" />
-        </el-form-item>
-        <el-form-item label="订单添加人ID" prop="orderHolderUserId">
-          <el-input v-model="form.orderHolderUserId" placeholder="请输入订单添加人ID" />
+          <el-input v-model="form.orderBuyerAddress" placeholder="请输入收货地址"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -161,20 +184,32 @@
 </template>
 
 <script>
-import { listOrder, getOrder, delOrder, addOrder, updateOrder,queryCoalList } from "@/api/manage/order";
+import {
+  listOrder,
+  getOrder,
+  delOrder,
+  addOrder,
+  updateOrder,
+  queryCoalList,
+  deliverOrder,
+  revOrder,
+  payFinishOrder,
+  partPay
+} from "@/api/manage/order";
 
 export default {
   name: "Order",
-  dicts: ['order_transfer', 'order_pay','order_type','coal_kind'],
+  dicts: ['order_transfer', 'order_pay', 'order_type', 'coal_kind'],
   data() {
     return {
       // 遮罩层
       loading: true,
-      coalList:[],
+      coalList: [],
       // 选中数组
       ids: [],
       // 非单个禁用
       single: true,
+      partPayFlag: false,
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
@@ -185,6 +220,7 @@ export default {
       orderList: [],
       // 弹出层标题
       title: "",
+      partPayTitle: "",
       // 是否显示弹出层
       open: false,
       // 查询参数
@@ -205,8 +241,8 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {},
+      partPayForm:{}
     };
   },
   created() {
@@ -214,7 +250,7 @@ export default {
     this.getList();
   },
   methods: {
-    getCoalList(){
+    getCoalList() {
       queryCoalList().then(res => {
         this.coalList = res.data;
       })
@@ -232,6 +268,10 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+    },
+    cancelPartPay() {
+      this.partPayFlag = false;
+      this.resetPartPay();
     },
     // 表单重置
     reset() {
@@ -254,6 +294,12 @@ export default {
       };
       this.resetForm("form");
     },
+    resetPartPay(){
+      this.partPayForm = {
+        id: null,
+        payAmt: null
+      }
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -267,7 +313,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -275,6 +321,13 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加订单信息";
+    },
+    handlePartPay(row) {
+      this.resetPartPay()
+      const id = row.id
+      this.partPayForm.id = id
+      this.partPayFlag = true
+      this.partPayTitle = "分期支付"
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -285,6 +338,14 @@ export default {
         this.open = true;
         this.title = "修改订单信息";
       });
+    },
+    submitPartPay() {
+      partPay(this.partPayForm).then(res => {
+        this.$modal.msgSuccess("分期付款成功");
+        this.resetPartPay()
+        this.partPayFlag = false;
+        this.getList()
+      })
     },
     /** 提交按钮 */
     submitForm() {
@@ -309,12 +370,34 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除订单信息编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除订单信息编号为"' + ids + '"的数据项？').then(function () {
         return delOrder(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
+    },
+    handleDeliver(row) {
+      const id = row.id;
+      deliverOrder(id).then(res => {
+        this.$modal.msgSuccess("发货成功");
+        this.getList()
+      })
+    },
+    handleRec(row) {
+      const id = row.id;
+      revOrder(id).then(res => {
+        this.$modal.msgSuccess("确认收货成功");
+        this.getList()
+      })
+    },
+    handlePay(row) {
+      const id = row.id;
+      payFinishOrder(id).then(res => {
+        this.$modal.msgSuccess("付款成功");
+        this.getList()
+      })
     },
     /** 导出按钮操作 */
     handleExport() {

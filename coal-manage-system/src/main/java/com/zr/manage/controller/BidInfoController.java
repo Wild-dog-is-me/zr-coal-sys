@@ -2,6 +2,9 @@ package com.zr.manage.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.zr.manage.controller.vo.BidInfoVO;
+import com.zr.manage.convert.BidInfoConvert;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +45,8 @@ public class BidInfoController extends BaseController
     {
         startPage();
         List<BidInfo> list = bidInfoService.selectBidInfoList(bidInfo);
-        return getDataTable(list);
+        List<BidInfoVO> bidInfoVOList = BidInfoConvert.convertVO(list);
+        return getDataTable(bidInfoVOList);
     }
 
     /**

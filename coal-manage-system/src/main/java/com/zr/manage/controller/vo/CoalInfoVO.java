@@ -21,7 +21,7 @@ public class CoalInfoVO extends BaseEntity {
 
     private Long id;
 
-    /** 煤矿类型 */
+    /** 煤炭类型 */
     private String coalKind;
 
     /** 规格 */

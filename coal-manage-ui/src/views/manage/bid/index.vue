@@ -2,20 +2,24 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="产品名称" prop="bidName">
-        <el-input
-          v-model="queryParams.bidName"
-          placeholder="请输入产品名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.bidName" placeholder="请选择类型" clearable>
+          <el-option
+            v-for="dict in dict.type.coal_kind"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="规格" prop="bidCoalSize">
-        <el-input
-          v-model="queryParams.bidCoalSize"
-          placeholder="请输入规格"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.bidCoalSize" placeholder="请选择规格" clearable>
+          <el-option
+            v-for="dict in dict.type.coal_size"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="竞价价格" prop="bidCoalPrice">
         <el-input
@@ -56,7 +60,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['manage:bid:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -67,7 +72,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['manage:bid:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -78,7 +84,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['manage:bid:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -88,20 +95,28 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['manage:bid:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="bidList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="产品名称" align="center" prop="bidName" />
-      <el-table-column label="类型" align="center" prop="bidCoalType" />
-      <el-table-column label="规格" align="center" prop="bidCoalSize" />
-      <el-table-column label="竞价价格" align="center" prop="bidCoalPrice" />
-      <el-table-column label="竞价公司ID" align="center" prop="bidSupplierId" />
-      <el-table-column label="竞价备注" align="center" prop="bidRemark" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="产品名称" align="center" prop="bidName"/>
+      <el-table-column label="类型" align="center" prop="bidCoalType">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.coal_kind" :value="scope.row.bidCoalType"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="规格" align="center" prop="bidCoalSize">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.coal_size" :value="scope.row.bidCoalSize"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="竞价价格" align="center" prop="bidCoalPrice"/>
+      <el-table-column label="竞价公司" align="center" prop="bidSupplierName"/>
+      <el-table-column label="竞价备注" align="center" prop="bidRemark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -110,18 +125,20 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['manage:bid:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['manage:bid:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -134,19 +151,36 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="产品名称" prop="bidName">
-          <el-input v-model="form.bidName" placeholder="请输入产品名称" />
+          <el-input v-model="form.bidName" placeholder="请输入名称"/>
+        </el-form-item>
+        <el-form-item label="产品名称" prop="bidCoalType">
+          <el-select v-model="form.bidCoalType" placeholder="请选择类型" clearable>
+            <el-option
+              v-for="dict in dict.type.coal_kind"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="规格" prop="bidCoalSize">
-          <el-input v-model="form.bidCoalSize" placeholder="请输入规格" />
+          <el-select v-model="form.bidCoalSize" placeholder="请选择规格" clearable>
+            <el-option
+              v-for="dict in dict.type.coal_size"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="竞价价格" prop="bidCoalPrice">
-          <el-input v-model="form.bidCoalPrice" placeholder="请输入竞价价格" />
+          <el-input v-model="form.bidCoalPrice" placeholder="请输入竞价价格"/>
         </el-form-item>
         <el-form-item label="竞价公司ID" prop="bidSupplierId">
-          <el-input v-model="form.bidSupplierId" placeholder="请输入竞价公司ID" />
+          <el-input v-model="form.bidSupplierId" placeholder="请输入竞价公司ID"/>
         </el-form-item>
         <el-form-item label="竞价备注" prop="bidRemark">
-          <el-input v-model="form.bidRemark" placeholder="请输入竞价备注" />
+          <el-input v-model="form.bidRemark" placeholder="请输入竞价备注"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -158,10 +192,11 @@
 </template>
 
 <script>
-import { listBid, getBid, delBid, addBid, updateBid } from "@/api/manage/bid";
+import {listBid, getBid, delBid, addBid, updateBid} from "@/api/manage/bid";
 
 export default {
   name: "Bid",
+  dicts: ['coal_size', 'coal_kind'],
   data() {
     return {
       // 遮罩层
@@ -196,8 +231,7 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
+      rules: {}
     };
   },
   created() {
@@ -248,7 +282,7 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -290,12 +324,13 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除竞价采购编号为"' + ids + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除竞价采购编号为"' + ids + '"的数据项？').then(function () {
         return delBid(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     /** 导出按钮操作 */
     handleExport() {

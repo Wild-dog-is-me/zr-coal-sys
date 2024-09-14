@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 @Data
 public class BidInfoVO extends BaseEntity {
 
+    private Long id;
+
     private String bidName;
 
     private String bidCoalType;

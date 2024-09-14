@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="煤矿类型" prop="coalKind">
+      <el-form-item label="煤炭类型" prop="coalKind">
         <el-select v-model="queryParams.coalKind" placeholder="请选择类型" clearable>
           <el-option
             v-for="dict in dict.type.coal_kind"
@@ -67,7 +67,7 @@
           icon="el-icon-s-promotion"
           size="mini"
           @click="purchaseAdd"
-        >采购煤矿
+        >采购煤炭
         </el-button>
       </el-col>
 
@@ -76,7 +76,7 @@
 
     <el-table v-loading="loading" :data="coalList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="煤矿类型" align="center" prop="coalKind">
+      <el-table-column label="煤炭类型" align="center" prop="coalKind">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>
         </template>
@@ -189,10 +189,10 @@
       </div>
     </el-dialog>
 
-    <!-- 添加或修改煤矿信息对话框 -->
+    <!-- 添加或修改煤炭信息对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="煤矿类型" prop="coalKind">
+        <el-form-item label="煤炭类型" prop="coalKind">
           <el-select v-model="form.coalKind" placeholder="请选择类型" clearable>
             <el-option
               v-for="dict in dict.type.coal_kind"
@@ -269,7 +269,7 @@ export default {
       disableFlag: true,
       // 总条数
       total: 0,
-      // 煤矿信息表格数据
+      // 煤炭信息表格数据
       coalList: [],
       // 弹出层标题
       title: "",
@@ -304,7 +304,7 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询煤矿信息列表 */
+    /** 查询煤炭信息列表 */
     getList() {
       this.loading = true;
       listCoal(this.queryParams).then(response => {
@@ -385,7 +385,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加煤矿信息";
+      this.title = "添加煤炭信息";
     },
     purchaseAdd() {
       this.resetPurchaseForm();
@@ -399,7 +399,7 @@ export default {
       getCoal(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改煤矿信息";
+        this.title = "修改煤炭信息";
       });
     },
     addOrder(row) {
@@ -449,7 +449,7 @@ export default {
   /** 删除按钮操作 */
   handleDelete(row) {
     const ids = row.id || this.ids;
-    this.$modal.confirm('是否确认删除煤矿信息编号为"' + ids + '"的数据项？').then(function () {
+    this.$modal.confirm('是否确认删除煤炭信息编号为"' + ids + '"的数据项？').then(function () {
       return delCoal(ids);
     }).then(() => {
       this.getList();

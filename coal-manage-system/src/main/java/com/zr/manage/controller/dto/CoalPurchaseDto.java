@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CoalPurchaseDto {
 
     /**
-     * 煤矿ID
+     * 煤炭ID
      */
     private Long coalId;
 

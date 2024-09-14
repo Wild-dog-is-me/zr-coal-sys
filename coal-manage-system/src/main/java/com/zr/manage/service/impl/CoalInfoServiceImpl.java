@@ -13,7 +13,7 @@ import com.zr.manage.domain.CoalInfo;
 import com.zr.manage.service.ICoalInfoService;
 
 /**
- * 煤矿信息Service业务层处理
+ * 煤炭信息Service业务层处理
  *
  * @author zr
  * @date 2024-09-08
@@ -25,10 +25,10 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     private CoalInfoMapper coalInfoMapper;
 
     /**
-     * 查询煤矿信息
+     * 查询煤炭信息
      *
-     * @param id 煤矿信息主键
-     * @return 煤矿信息
+     * @param id 煤炭信息主键
+     * @return 煤炭信息
      */
     @Override
     public CoalInfo selectCoalInfoById(Long id)
@@ -37,10 +37,10 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     }
 
     /**
-     * 查询煤矿信息列表
+     * 查询煤炭信息列表
      *
-     * @param coalInfo 煤矿信息
-     * @return 煤矿信息
+     * @param coalInfo 煤炭信息
+     * @return 煤炭信息
      */
     @Override
     public List<CoalInfoVO> selectCoalInfoList(CoalInfo coalInfo)
@@ -49,9 +49,9 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     }
 
     /**
-     * 新增煤矿信息
+     * 新增煤炭信息
      *
-     * @param coalInfo 煤矿信息
+     * @param coalInfo 煤炭信息
      * @return 结果
      */
     @Override
@@ -63,9 +63,9 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     }
 
     /**
-     * 修改煤矿信息
+     * 修改煤炭信息
      *
-     * @param coalInfo 煤矿信息
+     * @param coalInfo 煤炭信息
      * @return 结果
      */
     @Override
@@ -76,9 +76,9 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     }
 
     /**
-     * 批量删除煤矿信息
+     * 批量删除煤炭信息
      *
-     * @param ids 需要删除的煤矿信息主键
+     * @param ids 需要删除的煤炭信息主键
      * @return 结果
      */
     @Override
@@ -88,9 +88,9 @@ public class CoalInfoServiceImpl extends ServiceImpl<CoalInfoMapper,CoalInfo> im
     }
 
     /**
-     * 删除煤矿信息信息
+     * 删除煤炭信息信息
      *
-     * @param id 煤矿信息主键
+     * @param id 煤炭信息主键
      * @return 结果
      */
     @Override

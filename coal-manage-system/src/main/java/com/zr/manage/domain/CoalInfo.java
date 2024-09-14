@@ -15,7 +15,7 @@ import com.zr.common.annotation.Excel;
 import com.zr.common.core.domain.BaseEntity;
 
 /**
- * 煤矿信息对象 zr_coal_info
+ * 煤炭信息对象 zr_coal_info
  *
  * @author zr
  * @date 2024-09-08
@@ -34,8 +34,8 @@ public class CoalInfo extends BaseEntity
     @TableId(type = IdType.AUTO)
     private Long id;
 
-    /** 煤矿类型 */
-    @Excel(name = "煤矿类型")
+    /** 煤炭类型 */
+    @Excel(name = "煤炭类型")
     private String coalKind;
 
     /** 规格 */

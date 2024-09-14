@@ -31,7 +31,7 @@ import com.zr.common.utils.poi.ExcelUtil;
 import com.zr.common.core.page.TableDataInfo;
 
 /**
- * 煤矿信息Controller
+ * 煤炭信息Controller
  *
  * @author zr
  * @date 2024-09-08
@@ -47,7 +47,7 @@ public class CoalInfoController extends BaseController {
     private IOrderInfoService orderInfoService;
 
     /**
-     * 查询煤矿信息列表
+     * 查询煤炭信息列表
      */
     @GetMapping("/list")
     public TableDataInfo list(CoalInfo coalInfo) {
@@ -57,18 +57,18 @@ public class CoalInfoController extends BaseController {
     }
 
     /**
-     * 导出煤矿信息列表
+     * 导出煤炭信息列表
      */
-    @Log(title = "煤矿信息", businessType = BusinessType.EXPORT)
+    @Log(title = "煤炭信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, CoalInfo coalInfo) {
         List<CoalInfoVO> list = coalInfoService.selectCoalInfoList(coalInfo);
         ExcelUtil<CoalInfo> util = new ExcelUtil<CoalInfo>(CoalInfo.class);
-        util.exportExcel(response, CoalInfoConvert.convertEntity(list), "煤矿信息数据");
+        util.exportExcel(response, CoalInfoConvert.convertEntity(list), "煤炭信息数据");
     }
 
     /**
-     * 获取煤矿信息详细信息
+     * 获取煤炭信息详细信息
      */
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@PathVariable("id") Long id) {
@@ -76,27 +76,27 @@ public class CoalInfoController extends BaseController {
     }
 
     /**
-     * 新增煤矿信息
+     * 新增煤炭信息
      */
-    @Log(title = "煤矿信息", businessType = BusinessType.INSERT)
+    @Log(title = "煤炭信息", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody CoalInfo coalInfo) {
         return toAjax(coalInfoService.insertCoalInfo(coalInfo));
     }
 
     /**
-     * 修改煤矿信息
+     * 修改煤炭信息
      */
-    @Log(title = "煤矿信息", businessType = BusinessType.UPDATE)
+    @Log(title = "煤炭信息", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody CoalInfo coalInfo) {
         return toAjax(coalInfoService.updateCoalInfo(coalInfo));
     }
 
     /**
-     * 删除煤矿信息
+     * 删除煤炭信息
      */
-    @Log(title = "煤矿信息", businessType = BusinessType.DELETE)
+    @Log(title = "煤炭信息", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(coalInfoService.deleteCoalInfoByIds(ids));

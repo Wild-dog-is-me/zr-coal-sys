@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询煤矿信息列表
+// 查询煤炭信息列表
 export function listCoal(query) {
   return request({
     url: '/manage/coal/list',
@@ -9,7 +9,7 @@ export function listCoal(query) {
   })
 }
 
-// 查询煤矿信息详细
+// 查询煤炭信息详细
 export function getCoal(id) {
   return request({
     url: '/manage/coal/' + id,
@@ -17,7 +17,7 @@ export function getCoal(id) {
   })
 }
 
-// 新增煤矿信息
+// 新增煤炭信息
 export function addCoal(data) {
   return request({
     url: '/manage/coal',
@@ -26,7 +26,7 @@ export function addCoal(data) {
   })
 }
 
-// 修改煤矿信息
+// 修改煤炭信息
 export function updateCoal(data) {
   return request({
     url: '/manage/coal',
@@ -35,7 +35,7 @@ export function updateCoal(data) {
   })
 }
 
-// 删除煤矿信息
+// 删除煤炭信息
 export function delCoal(id) {
   return request({
     url: '/manage/coal/' + id,
@@ -43,7 +43,7 @@ export function delCoal(id) {
   })
 }
 
-// 删除煤矿信息
+// 删除煤炭信息
 export function listSupplierList() {
   return request({
     url: '/manage/coal/supplierList',
@@ -51,7 +51,7 @@ export function listSupplierList() {
   })
 }
 
-// 采购煤矿
+// 采购煤炭
 export function purchaseOrder(data) {
   return request({
     url: '/manage/coal/purchase',
@@ -60,7 +60,7 @@ export function purchaseOrder(data) {
   })
 }
 
-// 销售煤矿
+// 销售煤炭
 export function saleOrder(data) {
   return request({
     url: 'manage/coal/sale',

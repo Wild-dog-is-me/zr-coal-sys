@@ -99,4 +99,16 @@ public class BidInfoController extends BaseController
     {
         return toAjax(bidInfoService.deleteBidInfoByIds(ids));
     }
+
+    /**
+     * 根据公告采购煤炭
+     * @param id
+     * @return
+     */
+    @GetMapping("/purchase/{id}")
+    public AjaxResult purchase(@PathVariable("id") Long id) {
+        bidInfoService.purchase(id);
+        return AjaxResult.success();
+    }
+
 }

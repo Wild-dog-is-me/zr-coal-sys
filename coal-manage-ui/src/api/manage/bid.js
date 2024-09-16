@@ -42,3 +42,11 @@ export function delBid(id) {
     method: 'delete'
   })
 }
+
+// 采购
+export function purchaseBid(id){
+  return request({
+    url: '/manage/bid/purchase/' + id,
+    method: 'get'
+  })
+}

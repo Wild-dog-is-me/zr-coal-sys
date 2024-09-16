@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,7 @@ public class OrderInfo extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 主键 */
+    @JsonSerialize(using = ToStringSerializer.class)
     @TableId(type = IdType.AUTO)
     private Long id;
 

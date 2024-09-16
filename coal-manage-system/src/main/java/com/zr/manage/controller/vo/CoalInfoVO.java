@@ -1,5 +1,7 @@
 package com.zr.manage.controller.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.zr.common.annotation.Excel;
 import com.zr.common.core.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CoalInfoVO extends BaseEntity {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /** 煤炭类型 */

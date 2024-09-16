@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zr.manage.mapper.SupplierInfoMapper">
-    
+
     <resultMap type="SupplierInfo" id="SupplierInfoResult">
         <result property="id"    column="id"    />
         <result property="createBy"    column="create_by"    />
@@ -22,20 +22,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSupplierInfoList" parameterType="SupplierInfo" resultMap="SupplierInfoResult">
         <include refid="selectSupplierInfoVo"/>
-        <where>  
+        <where>
             <if test="supplierName != null  and supplierName != ''"> and supplier_name like concat('%', #{supplierName}, '%')</if>
             <if test="supplierIntro != null  and supplierIntro != ''"> and supplier_intro = #{supplierIntro}</if>
             <if test="supplierPerson != null  and supplierPerson != ''"> and supplier_person = #{supplierPerson}</if>
             <if test="supplierPhone != null  and supplierPhone != ''"> and supplier_phone = #{supplierPhone}</if>
         </where>
     </select>
-    
+
     <select id="selectSupplierInfoById" parameterType="Long" resultMap="SupplierInfoResult">
         <include refid="selectSupplierInfoVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertSupplierInfo" parameterType="SupplierInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertSupplierInfo" parameterType="SupplierInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_supplier_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>
@@ -79,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteSupplierInfoByIds" parameterType="String">
-        delete from zr_supplier_info where id in 
+        delete from zr_supplier_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

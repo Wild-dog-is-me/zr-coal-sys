@@ -150,7 +150,9 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderNo(RandomNumberGenerator.gen());
         // 2.计算订单价格
         Long coalId = dto.getCoalId();
-        CoalInfo coalInfo = coalInfoMapper.selectById(coalId);
+        LambdaQueryWrapper<CoalInfo> lqw = new LambdaQueryWrapper();
+        lqw.eq(CoalInfo::getCoalKind, dto.getCoalId());
+        CoalInfo coalInfo = coalInfoMapper.selectOne(lqw);
         BigDecimal coalPrice = coalInfo.getCoalPrice();
         BigDecimal orderTonNum = new BigDecimal(dto.getOrderTon());
         BigDecimal orderPrice = coalPrice.multiply(orderTonNum);
@@ -164,7 +166,7 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         orderInfo.setOrderBuyerPhone(Constant.PURCHASE_ORDER_PHONE);
         orderInfo.setOrderBuyerAddress(Constant.PURCHASE_ORDER_ADDRESS);
         orderInfo.setOrderHolderUserId(dto.getSupplierId());
-        this.save(orderInfo);
+        orderInfoMapper.insert(orderInfo);
     }
 
     @Override

@@ -29,21 +29,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="竞价公司ID" prop="bidSupplierId">
-        <el-input
-          v-model="queryParams.bidSupplierId"
-          placeholder="请输入竞价公司ID"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="竞价备注" prop="bidRemark">
-        <el-input
-          v-model="queryParams.bidRemark"
-          placeholder="请输入竞价备注"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="竞价公司" prop="bidSupplierId">
+        <el-select v-model="queryParams.bidSupplierId"
+                   placeholder="请选择供应商" clearable>
+          <el-option
+            v-for="item in supplierList"
+            :key="item.id"
+            :label="item.label"
+            :value="item.supplierName"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -135,6 +130,13 @@
             v-hasPermi="['manage:bid:remove']"
           >删除
           </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handlePurchase(scope.row)"
+          >采购
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -176,8 +178,16 @@
         <el-form-item label="竞价价格" prop="bidCoalPrice">
           <el-input v-model="form.bidCoalPrice" placeholder="请输入竞价价格"/>
         </el-form-item>
-        <el-form-item label="竞价公司ID" prop="bidSupplierId">
-          <el-input v-model="form.bidSupplierId" placeholder="请输入竞价公司ID"/>
+        <el-form-item label="竞价公司" prop="bidSupplierId">
+          <el-select v-model="form.bidSupplierId"
+                     placeholder="请选择供应商" clearable>
+            <el-option
+              v-for="item in supplierList"
+              :key="item.id"
+              :label="item.label"
+              :value="item.supplierName"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="竞价备注" prop="bidRemark">
           <el-input v-model="form.bidRemark" placeholder="请输入竞价备注"/>
@@ -192,13 +202,15 @@
 </template>
 
 <script>
-import {listBid, getBid, delBid, addBid, updateBid} from "@/api/manage/bid";
+import {listBid, getBid, delBid, addBid, updateBid,purchaseBid} from "@/api/manage/bid";
+import {listSupplier} from "@/api/manage/supplier";
 
 export default {
   name: "Bid",
   dicts: ['coal_size', 'coal_kind'],
   data() {
     return {
+      supplierList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -235,9 +247,15 @@ export default {
     };
   },
   created() {
+    this.getSupplierList();
     this.getList();
   },
   methods: {
+    getSupplierList() {
+      listSupplier().then(res => {
+        this.supplierList = res.rows;
+      })
+    },
     /** 查询竞价采购列表 */
     getList() {
       this.loading = true;
@@ -329,6 +347,17 @@ export default {
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
+      }).catch(() => {
+      });
+    },
+
+    handlePurchase(row) {
+      const ids = row.id || this.ids;
+      this.$modal.confirm('是否确认采购').then(function () {
+        return purchaseBid(ids);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("采购成功,请前往下单并支付");
       }).catch(() => {
       });
     },

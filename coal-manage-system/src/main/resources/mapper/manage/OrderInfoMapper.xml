@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zr.manage.mapper.OrderInfoMapper">
-    
+
     <resultMap type="OrderInfo" id="OrderInfoResult">
         <result property="id"    column="id"    />
         <result property="createBy"    column="create_by"    />
@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderInfoList" parameterType="OrderInfo" resultMap="OrderInfoResult">
         <include refid="selectOrderInfoVo"/>
-        <where>  
+        <where>
             <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
             <if test="orderCoalId != null "> and order_coal_id = #{orderCoalId}</if>
             <if test="orderStatus != null  and orderStatus != ''"> and order_status = #{orderStatus}</if>
@@ -41,13 +41,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderHolderUserId != null "> and order_holder_user_id = #{orderHolderUserId}</if>
         </where>
     </select>
-    
+
     <select id="selectOrderInfoById" parameterType="Long" resultMap="OrderInfoResult">
         <include refid="selectOrderInfoVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertOrderInfo" parameterType="OrderInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertOrderInfo" parameterType="OrderInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_order_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>
@@ -109,7 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteOrderInfoByIds" parameterType="String">
-        delete from zr_order_info where id in 
+        delete from zr_order_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

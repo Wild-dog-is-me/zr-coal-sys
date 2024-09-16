@@ -57,6 +57,31 @@ export default {
     this.chart = null
   },
   methods: {
+    getPreviousDates(includeToday = true, count = 6) {
+      const now = new Date();
+      const dates = [];
+
+      if (includeToday) {
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        dates.push(`${year}-${month}-${day}`);
+      }
+
+      for (let i = 1; i <= count; i++) {
+        now.setDate(now.getDate() - 1);
+        const prevYear = now.getFullYear();
+        const prevMonth = String(now.getMonth() + 1).padStart(2, '0');
+        const prevDay = String(now.getDate()).padStart(2, '0');
+        dates.unshift(`${prevYear}-${prevMonth}-${prevDay}`);
+      }
+
+      return dates;
+    },
+    calculatePreviousDates() {
+      // 调用函数并更新数据属性
+      this.previousDates = this.getPreviousDates(true, 6);
+    },
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
@@ -90,7 +115,7 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['预期', '实际']
         },
         series: [{
           name: 'expected', itemStyle: {

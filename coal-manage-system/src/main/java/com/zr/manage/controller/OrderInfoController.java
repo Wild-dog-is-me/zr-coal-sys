@@ -138,7 +138,7 @@ public class OrderInfoController extends BaseController {
         if (!orderInfo.getOrderPayStatus().equals(Constant.PAY_FINISH)) {
             throw new BaseException("未付清款项，无法收货");
         }
-        if (!orderInfo.getOrderStatus().equals(Constant.ORDER_STATUS_RCV)) {
+        if (orderInfo.getOrderStatus().equals(Constant.ORDER_STATUS_RCV)) {
             throw new BaseException("请勿重复确认收货");
         }
         orderInfo.setOrderStatus(Constant.ORDER_STATUS_RCV);

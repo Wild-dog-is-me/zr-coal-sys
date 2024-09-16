@@ -3,6 +3,7 @@ package com.zr.manage.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zr.common.utils.SecurityUtils;
 import com.zr.manage.controller.vo.CheckInfoVO;
 import com.zr.manage.convert.CheckInfoConvert;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +45,10 @@ public class CheckInfoController extends BaseController
     public TableDataInfo list(CheckInfo checkInfo)
     {
         startPage();
+        boolean admin = SecurityUtils.getLoginUser().equals("admin");
+        if (!admin) {
+            checkInfo.setCreateBy(SecurityUtils.getUsername());
+        }
         List<CheckInfo> list = checkInfoService.selectCheckInfoList(checkInfo);
         List<CheckInfoVO> checkInfoVOS = CheckInfoConvert.convertVO(list);
         return getDataTable(checkInfoVOS);

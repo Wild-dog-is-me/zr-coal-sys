@@ -47,7 +47,7 @@ public class CoalInfoConvert {
         CoalInfoVO coalInfoVO = BeanUtil.copyProperties(coalInfo, CoalInfoVO.class);
         SupplierInfo supplierInfo = supplierInfoMapper.selectById(coalInfo.getCoalSupplierId());
         LambdaQueryWrapper<FileInfo> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(FileInfo::getObjectId, coalInfo.getId());
+        lqw.eq(FileInfo::getObjectId, coalInfo.getCoalKind());
         List<FileInfo> fileInfos = fileInfoMapper.selectList(lqw);
         if (ObjectUtil.isNotNull(supplierInfo)) {
             if (!CollectionUtil.isEmpty(fileInfos)) {

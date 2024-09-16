@@ -39,7 +39,7 @@
         where id = #{id}
     </select>
 
-    <insert id="insertCheckInfo" parameterType="CheckInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertCheckInfo" parameterType="CheckInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_check_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>

@@ -41,7 +41,7 @@
         where id = #{id}
     </select>
 
-    <insert id="insertCoalInfo" parameterType="CoalInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertCoalInfo" parameterType="CoalInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_coal_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>

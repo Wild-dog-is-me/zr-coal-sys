@@ -1,6 +1,7 @@
 package com.zr.manage.convert;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.zr.common.core.domain.entity.SysUser;
 import com.zr.manage.controller.common.Constant;
 import com.zr.manage.controller.vo.OrderInfoVO;
@@ -47,7 +48,9 @@ public class OrderInfoConvert {
 
     public static OrderInfoVO convertVO(OrderInfo orderInfo) {
         OrderInfoVO orderInfoVO = BeanUtil.copyProperties(orderInfo, OrderInfoVO.class);
-        CoalInfo coalInfo = coalInfoMapper.selectById(orderInfo.getOrderCoalId());
+        LambdaQueryWrapper<CoalInfo> lqw = new LambdaQueryWrapper();
+        lqw.eq(CoalInfo::getCoalKind, orderInfo.getOrderCoalId());
+        CoalInfo coalInfo = coalInfoMapper.selectOne(lqw);
         orderInfoVO.setCoalKind(coalInfo.getCoalKind());
         orderInfoVO.setCoalSize(coalInfo.getCoalSize());
         String orderRemark = orderInfo.getOrderRemark();

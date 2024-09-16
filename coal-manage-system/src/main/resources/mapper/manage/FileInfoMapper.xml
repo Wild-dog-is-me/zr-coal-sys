@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zr.manage.mapper.FileInfoMapper">
-    
+
     <resultMap type="FileInfo" id="FileInfoResult">
         <result property="id"    column="id"    />
         <result property="createBy"    column="create_by"    />
@@ -21,19 +21,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectFileInfoList" parameterType="FileInfo" resultMap="FileInfoResult">
         <include refid="selectFileInfoVo"/>
-        <where>  
+        <where>
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
             <if test="fileUrl != null  and fileUrl != ''"> and file_url = #{fileUrl}</if>
             <if test="objectId != null "> and object_id = #{objectId}</if>
         </where>
     </select>
-    
+
     <select id="selectFileInfoById" parameterType="Long" resultMap="FileInfoResult">
         <include refid="selectFileInfoVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertFileInfo" parameterType="FileInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertFileInfo" parameterType="FileInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_file_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>
@@ -74,7 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteFileInfoByIds" parameterType="String">
-        delete from zr_file_info where id in 
+        delete from zr_file_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

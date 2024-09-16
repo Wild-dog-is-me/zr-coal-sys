@@ -9,14 +9,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="公告备注" prop="noticeRemark">
-        <el-input
-          v-model="queryParams.noticeRemark"
-          placeholder="请输入公告备注"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -71,11 +63,13 @@
 
     <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="主键" align="center" prop="id" />
-      <el-table-column label="公告类型" align="center" prop="noticeType" />
+      <el-table-column label="公告类型" align="center" prop="noticeType">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.notice_type" :value="scope.row.noticeType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="公告标题" align="center" prop="noticeTitle" />
       <el-table-column label="公告内容" align="center" prop="noticeContent" />
-      <el-table-column label="公告备注" align="center" prop="noticeRemark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -95,7 +89,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -130,6 +124,7 @@ import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api
 
 export default {
   name: "Notice",
+  dicts: ['notice_type'],
   data() {
     return {
       // 遮罩层

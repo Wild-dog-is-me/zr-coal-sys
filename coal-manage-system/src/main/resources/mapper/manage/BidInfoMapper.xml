@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zr.manage.mapper.BidInfoMapper">
-    
+
     <resultMap type="BidInfo" id="BidInfoResult">
         <result property="id"    column="id"    />
         <result property="createBy"    column="create_by"    />
@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectBidInfoList" parameterType="BidInfo" resultMap="BidInfoResult">
         <include refid="selectBidInfoVo"/>
-        <where>  
+        <where>
             <if test="bidName != null  and bidName != ''"> and bid_name like concat('%', #{bidName}, '%')</if>
             <if test="bidCoalType != null  and bidCoalType != ''"> and bid_coal_type = #{bidCoalType}</if>
             <if test="bidCoalSize != null  and bidCoalSize != ''"> and bid_coal_size = #{bidCoalSize}</if>
@@ -33,13 +33,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bidRemark != null  and bidRemark != ''"> and bid_remark = #{bidRemark}</if>
         </where>
     </select>
-    
+
     <select id="selectBidInfoById" parameterType="Long" resultMap="BidInfoResult">
         <include refid="selectBidInfoVo"/>
         where id = #{id}
     </select>
 
-    <insert id="insertBidInfo" parameterType="BidInfo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertBidInfo" parameterType="BidInfo" useGeneratedKeys="false" keyProperty="id">
         insert into zr_bid_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="createBy != null">create_by,</if>
@@ -89,7 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteBidInfoByIds" parameterType="String">
-        delete from zr_bid_info where id in 
+        delete from zr_bid_info where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

@@ -77,7 +77,6 @@
 
     <el-table v-loading="loading" :data="fileList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="主键" align="center" prop="id"/>
       <el-table-column label="文件名" align="center" prop="fileName"/>
       <el-table-column label="文件URL" align="center" prop="fileUrl" width="100">
         <template slot-scope="scope">
@@ -85,7 +84,9 @@
         </template>
       </el-table-column>
       <el-table-column label="商品" align="center" prop="objectId">
-
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.coal_kind" :value="scope.row.objectId"/>
+        </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -126,8 +127,15 @@
         <el-form-item label="文件URL" prop="fileUrl">
           <image-upload v-model="form.fileUrl"/>
         </el-form-item>
-        <el-form-item label="业务ID" prop="objectId">
-          <el-input v-model="form.objectId" placeholder="请输入业务ID"/>
+        <el-form-item label="绑定商品" prop="objectId">
+          <el-select v-model="form.objectId" placeholder="请选择" clearable>
+            <el-option
+              v-for="dict in dict.type.coal_kind"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

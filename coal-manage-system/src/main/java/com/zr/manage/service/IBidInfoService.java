@@ -60,4 +60,6 @@ public interface IBidInfoService extends IService<BidInfo>
      * @return 结果
      */
     public int deleteBidInfoById(Long id);
+
+    void purchase(Long id);
 }

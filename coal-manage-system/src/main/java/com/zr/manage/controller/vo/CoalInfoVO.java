@@ -24,6 +24,10 @@ public class CoalInfoVO extends BaseEntity {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
+    private String coalKindDesc;
+
+    private String coalSizeDesc;
+
     /** 煤炭类型 */
     private String coalKind;
 
@@ -56,4 +60,5 @@ public class CoalInfoVO extends BaseEntity {
 
     private String fileUrl;
 
+    private String fileAllUrl;
 }

@@ -21,16 +21,6 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="供应商" prop="coalSize">
-        <el-select v-model="queryParams.coalSupplierId" placeholder="请选择供应商" clearable>
-          <el-option
-            v-for="item in supplierList"
-            :key="item.id"
-            :label="item.label"
-            :value="item.supplierName"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -38,57 +28,97 @@
     </el-form>
 
 
-    <el-table v-loading="loading" :data="coalList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="煤炭类型" align="center" prop="coalKind">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="规格" align="center" prop="coalSize">
-        <template slot-scope="scope">
-          <dict-tag :options="dict.type.coal_size" :value="scope.row.coalSize"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="价格(元/吨)" align="center" prop="coalPrice">
-        <template slot-scope="scope">
-          <el-tag type="default">{{ scope.row.coalPrice }}.00 ¥</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="产品描述" align="center" prop="coalDecs"/>
-      <el-table-column label="产品库存(吨)" align="center" prop="coalInventory"/>
-      <el-table-column label="预览图" align="center" prop="fileUrl" width="100">
-        <template slot-scope="scope">
-          <image-preview :src="scope.row.fileUrl" :width="50" :height="50"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商" align="center" prop="supplierName"/>
-      <el-table-column label="供应商联系人" align="center" prop="supplierPerson">
-        <template slot-scope="scope">
-          <el-tag type="default">{{ scope.row.supplierPerson }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商电话" align="center" prop="supplierPhone"/>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['manage:coal:edit']"
-          >修改
-          </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="addOrder(scope.row)"
-          >下单
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!--    <el-table v-loading="loading" :data="coalList" @selection-change="handleSelectionChange">-->
+    <div style="display: flex;justify-content: space-around;flex-wrap: wrap;align-content: center">
+      <el-card v-for="(o, index) in coalList" :key="o" :body-style="{ padding: '0px' }" style="margin: 1em">
+        <image-preview :width="300" :height="300" :src="o.fileUrl"/>
+        <div style="margin: 1em">
+          <el-tag>
+            {{ o.coalKindDesc }}
+          </el-tag>
+          <span style="margin-left: 1em"></span>
+          <el-tag type="success">
+            规格：{{ o.coalSizeDesc }}
+          </el-tag>
+          <span style="margin-left: 1em"></span>
+          <el-tag type="warning">
+            价格：{{ o.coalPrice }}¥
+          </el-tag>
+        </div>
+        <div>
+
+        </div>
+        <div style="padding: 14px;display: flex;justify-content: center">
+          <div class="bottom clearfix">
+            <el-button round
+              size="mini"
+              type="primary"
+              icon="el-icon-goods"
+              @click="handleUpdate(o)"
+              v-hasPermi="['manage:coal:edit']"
+            >详情
+            </el-button>
+            <el-button round
+              size="mini"
+              type="success"
+              icon="el-icon-check"
+              @click="addOrder(o)"
+            >下单
+            </el-button>
+          </div>
+        </div>
+      </el-card>
+    </div>
+    <!--      <el-table-column type="selection" width="55" align="center"/>-->
+    <!--      <el-table-column label="煤炭类型" align="center" prop="coalKind">-->
+    <!--              <template slot-scope="scope">-->
+    <!--                <dict-tag :options="dict.type.coal_kind" :value="scope.row.coalKind"/>-->
+    <!--              </template>-->
+    <!--      </el-table-column>-->
+    <!--      <el-table-column label="规格" align="center" prop="coalSize">-->
+    <!--        <template slot-scope="scope">-->
+    <!--          <dict-tag :options="dict.type.coal_size" :value="scope.row.coalSize"/>-->
+    <!--        </template>-->
+    <!--      </el-table-column>-->
+    <!--      <el-table-column label="价格(元/吨)" align="center" prop="coalPrice">-->
+    <!--        <template slot-scope="scope">-->
+    <!--          <el-tag type="default">{{ scope.row.coalPrice }}.00 ¥</el-tag>-->
+    <!--        </template>-->
+    <!--      </el-table-column>-->
+    <!--      <el-table-column label="产品描述" align="center" prop="coalDecs"/>-->
+    <!--      <el-table-column label="产品库存(吨)" align="center" prop="coalInventory"/>-->
+    <!--      <el-table-column label="预览图" align="center" prop="fileUrl" width="100">-->
+    <!--        <template slot-scope="scope">-->
+
+    <!--        </template>-->
+    <!--      </el-table-column>-->
+    <!--      <el-table-column label="供应商" align="center" prop="supplierName"/>-->
+    <!--      <el-table-column label="供应商联系人" align="center" prop="supplierPerson">-->
+    <!--        <template slot-scope="scope">-->
+    <!--          <el-tag type="default">{{ scope.row.supplierPerson }}</el-tag>-->
+    <!--        </template>-->
+    <!--      </el-table-column>-->
+    <!--      <el-table-column label="供应商电话" align="center" prop="supplierPhone"/>-->
+    <!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
+    <!--        <template slot-scope="scope">-->
+<!--              <el-button-->
+<!--                size="mini"-->
+<!--                type="text"-->
+<!--                icon="el-icon-edit"-->
+<!--                @click="handleUpdate(o)"-->
+<!--                v-hasPermi="['manage:coal:edit']"-->
+<!--              >修改-->
+<!--              </el-button>-->
+<!--              <el-button-->
+<!--                size="mini"-->
+<!--                type="text"-->
+<!--                icon="el-icon-edit"-->
+<!--                @click="addOrder(o)"-->
+<!--              >下单-->
+<!--              </el-button>-->
+    <!--        </template>-->
+    <!--      </el-table-column>-->
+    <!--    </el-table>-->
 
     <pagination
       v-show="total>0"
@@ -157,7 +187,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="煤炭类型" prop="coalKind">
-          <el-select v-model="form.coalKind" placeholder="请选择类型" clearable>
+          <el-select disabled v-model="form.coalKind" placeholder="请选择类型" clearable>
             <el-option
               v-for="dict in dict.type.coal_kind"
               :key="dict.value"
@@ -167,7 +197,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="规格" prop="coalSize">
-          <el-select v-model="form.coalSize" placeholder="请选择规格" clearable>
+          <el-select disabled v-model="form.coalSize" placeholder="请选择规格" clearable>
             <el-option
               v-for="dict in dict.type.coal_size"
               :key="dict.value"
@@ -177,13 +207,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="价格" prop="coalPrice">
-          <el-input v-model="form.coalPrice" placeholder="请输入价格"/>
+          <el-input disabled v-model="form.coalPrice" placeholder="请输入价格"/>
         </el-form-item>
         <el-form-item label="产品描述" prop="coalDecs">
-          <el-input v-model="form.coalDecs" placeholder="请输入产品描述"/>
+          <el-input disabled v-model="form.coalDecs" placeholder="请输入产品描述"/>
         </el-form-item>
         <el-form-item label="供应商" prop="coalSupplierId">
-          <el-select v-model="form.coalSupplierId" placeholder="请选择供应商" clearable value-key="value">
+          <el-select disabled v-model="form.coalSupplierId" placeholder="请选择供应商" clearable value-key="value">
             <el-option
               v-for="item in supplierList"
               :key="item.id"
@@ -194,8 +224,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button @click="cancel">关 闭</el-button>
       </div>
     </el-dialog>
   </div>
@@ -212,6 +241,7 @@ import {
   saleOrder
 } from "@/api/manage/coal";
 import {listSupplier} from "@/api/manage/supplier";
+import dict from "@/utils/dict";
 
 export default {
   name: "Coal",
@@ -267,6 +297,7 @@ export default {
     this.getList();
   },
   methods: {
+    dict,
     /** 查询煤炭信息列表 */
     getList() {
       this.loading = true;
@@ -362,7 +393,7 @@ export default {
       getCoal(id).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改煤炭信息";
+        this.title = "煤炭信息";
       });
     },
     addOrder(row) {

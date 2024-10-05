@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zr.common.utils.DictUtils;
 import com.zr.common.utils.spring.SpringUtils;
 import com.zr.manage.controller.vo.CoalInfoVO;
 import com.zr.manage.domain.CoalInfo;
@@ -54,6 +55,8 @@ public class CoalInfoConvert {
                 coalInfoVO.setFileUrl(fileInfos.get(0).getFileUrl());
                 coalInfoVO.setFileUrls(fileInfos.stream().map(FileInfo::getFileUrl).collect(Collectors.toList()));
             }
+            coalInfoVO.setCoalKindDesc(DictUtils.getDictLabel("coal_kind",coalInfo.getCoalKind()));
+            coalInfoVO.setCoalSizeDesc(DictUtils.getDictLabel("coal_size",coalInfo.getCoalSize()));
             coalInfoVO.setSupplierName(supplierInfo.getSupplierName());
             coalInfoVO.setSupplierPhone(supplierInfo.getSupplierPhone());
             coalInfoVO.setSupplierPerson(supplierInfo.getSupplierPerson());

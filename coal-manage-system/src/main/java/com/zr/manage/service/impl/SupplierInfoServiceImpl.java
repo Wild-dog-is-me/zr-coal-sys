@@ -2,13 +2,22 @@ package com.zr.manage.service.impl;
 
 import java.util.List;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zr.common.exception.base.BaseException;
 import com.zr.common.utils.DateUtils;
+import com.zr.manage.domain.CheckInfo;
+import com.zr.manage.domain.CoalInfo;
+import com.zr.manage.mapper.CheckInfoMapper;
+import com.zr.manage.mapper.CoalInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.zr.manage.mapper.SupplierInfoMapper;
 import com.zr.manage.domain.SupplierInfo;
 import com.zr.manage.service.ISupplierInfoService;
+
+import javax.annotation.Resource;
 
 /**
  * 供应商Service业务层处理
@@ -20,6 +29,8 @@ import com.zr.manage.service.ISupplierInfoService;
 public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, SupplierInfo> implements ISupplierInfoService {
     @Autowired
     private SupplierInfoMapper supplierInfoMapper;
+
+    @Resource
 
     /**
      * 查询供应商
@@ -67,6 +78,11 @@ public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, Sup
         return supplierInfoMapper.updateSupplierInfo(supplierInfo);
     }
 
+    @Resource
+    private CheckInfoMapper checkInfoMapper;
+    @Resource
+    private CoalInfoMapper coalInfoMapper;
+
     /**
      * 批量删除供应商
      *
@@ -75,7 +91,18 @@ public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, Sup
      */
     @Override
     public int deleteSupplierInfoByIds(Long[] ids) {
-        return supplierInfoMapper.deleteSupplierInfoByIds(ids);
+        Long id = ids[0];
+        LambdaQueryWrapper<CoalInfo> lqw1 = new LambdaQueryWrapper<>();
+        lqw1.eq(CoalInfo::getCoalSupplierId, id);
+        List<CoalInfo> coalInfos = coalInfoMapper.selectList(lqw1);
+        LambdaQueryWrapper<CheckInfo> lqw2 = new LambdaQueryWrapper<>();
+        lqw2.eq(CheckInfo::getCheckHolderUserId, id);
+        List<CheckInfo> checkInfos = checkInfoMapper.selectList(lqw2);
+        if (ObjectUtil.isNull(checkInfos) && ObjectUtil.isNull(coalInfos)) {
+            return supplierInfoMapper.deleteSupplierInfoByIds(ids);
+        } else {
+            throw new BaseException("当前供应商仍有商品或订单未处理");
+        }
     }
 
     /**

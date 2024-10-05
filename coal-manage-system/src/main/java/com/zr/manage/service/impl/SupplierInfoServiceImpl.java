@@ -27,10 +27,9 @@ import javax.annotation.Resource;
  */
 @Service
 public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, SupplierInfo> implements ISupplierInfoService {
-    @Autowired
+    @Resource
     private SupplierInfoMapper supplierInfoMapper;
 
-    @Resource
 
     /**
      * 查询供应商
@@ -78,10 +77,6 @@ public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, Sup
         return supplierInfoMapper.updateSupplierInfo(supplierInfo);
     }
 
-    @Resource
-    private CheckInfoMapper checkInfoMapper;
-    @Resource
-    private CoalInfoMapper coalInfoMapper;
 
     /**
      * 批量删除供应商
@@ -91,18 +86,7 @@ public class SupplierInfoServiceImpl extends ServiceImpl<SupplierInfoMapper, Sup
      */
     @Override
     public int deleteSupplierInfoByIds(Long[] ids) {
-        Long id = ids[0];
-        LambdaQueryWrapper<CoalInfo> lqw1 = new LambdaQueryWrapper<>();
-        lqw1.eq(CoalInfo::getCoalSupplierId, id);
-        List<CoalInfo> coalInfos = coalInfoMapper.selectList(lqw1);
-        LambdaQueryWrapper<CheckInfo> lqw2 = new LambdaQueryWrapper<>();
-        lqw2.eq(CheckInfo::getCheckHolderUserId, id);
-        List<CheckInfo> checkInfos = checkInfoMapper.selectList(lqw2);
-        if (ObjectUtil.isNull(checkInfos) && ObjectUtil.isNull(coalInfos)) {
-            return supplierInfoMapper.deleteSupplierInfoByIds(ids);
-        } else {
-            throw new BaseException("当前供应商仍有商品或订单未处理");
-        }
+        return 0;
     }
 
     /**

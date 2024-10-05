@@ -36,7 +36,7 @@
             v-for="item in supplierList"
             :key="item.id"
             :label="item.label"
-            :value="item.supplierName"
+            :value="item.supplabellierName"
           />
         </el-select>
       </el-form-item>
@@ -184,8 +184,8 @@
             <el-option
               v-for="item in supplierList"
               :key="item.id"
-              :label="item.label"
-              :value="item.supplierName"
+              :label="item.supplierName"
+              :value="item.id"
             />
           </el-select>
         </el-form-item>

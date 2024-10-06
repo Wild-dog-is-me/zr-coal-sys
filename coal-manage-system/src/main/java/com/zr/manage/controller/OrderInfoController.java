@@ -90,6 +90,7 @@ public class OrderInfoController extends BaseController {
      */
     @Log(title = "订单信息", businessType = BusinessType.UPDATE)
     @PutMapping
+    @PreAuthorize("@ss.hasPermi('order:info:update')")
     public AjaxResult edit(@RequestBody OrderInfo orderInfo) {
         return toAjax(orderInfoService.updateOrderInfo(orderInfo));
     }
@@ -114,6 +115,7 @@ public class OrderInfoController extends BaseController {
     /**
      * 发货
      */
+    @PreAuthorize("@ss.hasPermi('order:info:deliver')")
     @GetMapping("/deliver")
     public AjaxResult deliver(@RequestParam String id) {
         OrderInfo orderInfo = orderInfoService.getById(id);
@@ -129,6 +131,7 @@ public class OrderInfoController extends BaseController {
     /**
      * 收货
      */
+    @PreAuthorize("@ss.hasPermi('order:info:rev')")
     @GetMapping("/rev")
     public AjaxResult rev(@RequestParam String id) {
         OrderInfo orderInfo = orderInfoService.getById(id);
@@ -149,6 +152,7 @@ public class OrderInfoController extends BaseController {
     /**
      * 一次性付款清帐
      */
+    @PreAuthorize("@ss.hasPermi('order:info:onePay')")
     @GetMapping("/payFinish")
     public AjaxResult payFinish(@RequestParam String id) {
         // 更新订单表
@@ -182,6 +186,7 @@ public class OrderInfoController extends BaseController {
      * 未一次性清账单 分批付款
      * 校验是否超额支付，订单支付满额之后，自动支付完成
      */
+    @PreAuthorize("@ss.hasPermi('order:info:twicePay')")
     @PostMapping("/payDivide")
     public AjaxResult payDivide(@RequestBody DividePayDto dto) {
         orderInfoService.payDivide(dto.getId(), dto.getPayAmt());

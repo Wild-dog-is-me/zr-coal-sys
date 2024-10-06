@@ -50,7 +50,7 @@ public class OrderInfoConvert {
         OrderInfoVO orderInfoVO = BeanUtil.copyProperties(orderInfo, OrderInfoVO.class);
         LambdaQueryWrapper<CoalInfo> lqw = new LambdaQueryWrapper();
         lqw.eq(CoalInfo::getCoalKind, orderInfo.getOrderCoalId());
-        CoalInfo coalInfo = coalInfoMapper.selectOne(lqw);
+        CoalInfo coalInfo = coalInfoMapper.selectList(lqw).get(0);
         orderInfoVO.setCoalKind(coalInfo.getCoalKind());
         orderInfoVO.setCoalSize(coalInfo.getCoalSize());
         String orderRemark = orderInfo.getOrderRemark();

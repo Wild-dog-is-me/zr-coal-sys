@@ -105,31 +105,35 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['manage:order:edit']"
+            v-hasPermi="['order:info:update']"
           >修改
           </el-button>
           <el-button
             size="mini"
             type="text"
             @click="handleDeliver(scope.row)"
+            v-hasPermi="['order:info:deliver']"
           >发货
           </el-button>
           <el-button
             size="mini"
             type="text"
             @click="handleRec(scope.row)"
+            v-hasPermi="['order:info:rev']"
           >确认收货
           </el-button>
           <el-button
             size="mini"
             type="text"
             @click="handlePay(scope.row)"
+            v-hasPermi="['order:info:onePay']"
           >全额付款
           </el-button>
           <el-button
             size="mini"
             type="text"
             @click="handlePartPay(scope.row)"
+            v-hasPermi="['order:info:twicePay']"
           >分期支付
           </el-button>
         </template>

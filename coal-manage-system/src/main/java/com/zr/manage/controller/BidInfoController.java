@@ -75,6 +75,7 @@ public class BidInfoController extends BaseController
      */
     @Log(title = "竞价采购", businessType = BusinessType.INSERT)
     @PostMapping
+    @PreAuthorize("@ss.hasPermi('bid:info:order')")
     public AjaxResult add(@RequestBody BidInfo bidInfo)
     {
         return toAjax(bidInfoService.insertBidInfo(bidInfo));

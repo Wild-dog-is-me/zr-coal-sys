@@ -134,6 +134,7 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
+            v-hasPermi="['bid:info:order']"
             @click="handlePurchase(scope.row)"
           >采购
           </el-button>

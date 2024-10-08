@@ -1,6 +1,7 @@
 package com.zr.manage.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -124,8 +125,8 @@ public class BidInfoServiceImpl extends ServiceImpl<BidInfoMapper,BidInfo> imple
         BidInfo bidInfo = bidInfoMapper.selectById(id);
         LambdaQueryWrapper<CoalInfo> lqw = new LambdaQueryWrapper<>();
         lqw.eq(CoalInfo::getCoalKind, bidInfo.getBidCoalType());
-        CoalInfo one = coalInfoService.getOne(lqw);
-        if (!ObjectUtil.isNull(one)) {
+        CoalInfo one = coalInfoService.list(lqw).get(0);
+        if (Objects.isNull(one)) {
             return;
         }
         CoalInfo coalInfo = new CoalInfo();
